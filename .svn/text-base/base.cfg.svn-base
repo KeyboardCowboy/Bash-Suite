@@ -1,0 +1,168 @@
+#!/bin/bash
+#
+# base.cfg
+# SYSTEM LEVEL CONFIGURATIONS, SETTINGS AND FUNCTIONS
+
+# Console settings
+#export PS1="[\u@\h \w]\\$ "
+export PROMPT_COMMAND='export ERR=$?'
+export PS1="${BRIGHT_CYAN}[${CYAN}\u${BRIGHT_WHITE}@${CYAN}${TITLE}${WHITE}: \w${BRIGHT_CYAN}]${NORMAL}\$ ${RESET}"
+
+# Aliases
+alias b="cd -"
+alias e="vi"
+alias flushcache='dscacheutil -flushcache'
+alias grep='grep -rn --exclude="*svn*" --exclude="*.po*"'
+alias httpconf="edit /Applications/MAMP/conf/apache/httpd.conf"
+alias ll="ls -al"
+alias sb="source ~/.bash_profile"
+alias ping='ping -c 5'
+alias pp="cd ..; p"
+alias hidejs="find . -name '*.js' -exec mv {} "{}.notjs" \;"
+alias unhidejs="find . -name '*.notjs' -exec mv {} "{}.js" \;"
+alias p='decho;echo -e "${YELLOW}"`pwd`"${RESET}";ll;echo -e "${YELLOW}"`pwd`"${RESET}";decho;'
+
+# Edit a configuration file or open the bash profile
+function bp() {
+  DIR=$1
+  FILE=$2
+
+  if [ "$DIR" == "vars" ]; then
+    edit ~/.bash_config/vars.inc
+  elif [ "$DIR" == "l" ]; then
+    if [ -n "$FILE" ]; then
+      edit ~/.bash_config/local/$FILE.cfg
+    else
+      # If no filename was passed, go to the directory
+      cd ~/.bash_config/local
+    fi
+  elif [ "$DIR" == "g" ]; then
+    if [ -n "$FILE" ]; then
+      edit ~/.bash_config/global/$FILE.cfg
+    else
+      cd ~/.bash_config/global
+    fi
+  else
+    # If the first paramater is not "l" or "g", open the bash_profile
+    edit ~/.bash_profile
+  fi
+}
+
+# Open a directory and list the contents
+function cdp() {
+  cd $1; p
+}
+
+# Reprogram the EDIT function
+function edit() {
+  FILE=$1
+
+  if [ -n "$FILE" ]; then
+    title $FILE
+    e $FILE
+    title
+  else
+    _edit
+  fi
+}
+
+# Helper function to select a file to edit from a list of the directory
+function _edit() {
+  echo "------------------------"
+  pwd
+
+  i=1
+  for file in *; do
+    files[i]=$file
+    echo "$i. $file"
+    ((i++))
+  done
+
+  files["e"]="EXIT"
+  echo "E. EXIT"
+
+  read -p 'Select a file number: ' NUM
+
+  if [ -f ${files[$NUM]} ]; then
+    edit ${files[$NUM]}
+  fi
+}
+
+# Sync changes in eere modures and themes with the SVN checkout
+function esync() {
+  rsync -rcv --exclude='*svn*' `drush dd $1`/* `drush --root=/www/eere dd $1`
+}
+
+# Diff changes in eere modules and themes with the SVN checkout
+function ediff() {
+  diff -qr --exclude='*svn*' `drush dd $1` `drush --root=/www/eere dd $1`
+}
+
+# Delete a set of files
+function fd() {
+  read -p "Delete all instances of '$1' in this tree? (y/n) " X
+  if [ $X == "y" ]; then
+    find ./ -name '$1' -delete
+  fi
+}
+
+# Shortcut to edit specific common files
+function fedit() {
+  case $1 in
+    "apache")
+      edit $APACHE_CONFIG_FILE;;
+    "hosts")
+      edit $HOSTS_FILE
+  esac
+}
+
+# Find files below the current directory
+function ff() {
+  sudo find . -name "$1" -print
+}
+
+# Find files anywhere on the server
+function ffall() {
+  sudo find / -name "$1" -print
+}
+
+# Push a version through a module's .info files
+function pv() {
+  VERSION=$1
+  CORE=""
+
+  # Get the core version
+  for f in ./*.info; do
+    if [ -f $f ]; then
+      while read line
+      do
+        if [ "${line:0:4}" == "core" ]; then
+          CORE=${line:(-3)}
+        fi
+      done < $f
+    fi
+  done
+
+  # Ensure we found a core version
+  if [ -z "$CORE" ]; then
+    echo "Unable to determine core version.  Project version not updated."
+  else
+    # Change the version numbers while creating a backup
+    find . -name '*.info' -print -exec sed -i.bak "s/^version = [0-9].x-[0-9\.]*/version = $CORE-$VERSION/g" {} +
+
+    # Remove the backup file
+    find . -name '*.info.bak' -exec rm {} +
+  fi
+}
+
+# Set the console title
+function title() {
+  if [ -n "$1" ]; then
+    echo -en "\033]1;$STITLE: $1\007"
+  else
+    echo -en "\033]1;$TITLE\007"
+  fi
+}
+
+# Set the title
+title

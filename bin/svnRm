@@ -1,0 +1,14 @@
+#!/bin/bash
+
+URHERE=`pwd`
+
+# Specify a path to clear out
+if [ -d $1 ]; then
+  cd $1
+fi
+
+# Remove missing files from repo
+svn stat | grep ^! | awk '{print $2}' | xargs svn rm
+
+# Go back to where you started
+cd $URHERE

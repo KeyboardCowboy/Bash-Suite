@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# File: cains
+# Author: Chris Albrecht
+# Description: CA Installer.  Installs custom files and services.
+
+ACTION=$1
+LOC=$2
+PRE="CAINS:"
+CROOT=~/.bash_config/global/lib/cains
+
+# Load the global toolset
+source ~/.bash_config/global/lib/shared/tools.inc
+
+# Load the cains toolset
+source $CROOT/tools.inc
+
+# We can't proceed without an action.
+if [ -z "$ACTION" ]; then
+  echo "$PRE No action specified."
+  exit 1
+fi
+
+# Ensure the action file exists
+if [ ! -f $CROOT/$ACTION.func ]; then
+  echo "$PRE Action file not found."
+  exit 1
+fi
+
+# Run the cains script
+source $CROOT/$ACTION.func
+
+#case $ACTION in
+#  'drush-alias')
+#    echo "$PRE Installing drush alias file"
+#    cains_drush_alias;;
+
+#  'shared-index')
+#    echo "$PRE Installing shared index file at webroot"
+#    cains_shared_index;;
+
+#  *)
+#    echo "$PRE $ACTION is not a defined action.";;
+#esac

@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# File: svnEM
+# Author: Chris Albrecht
+#
+# Merge changes from one repository into another.
+
+FROM=$1
+TO=$2
+
+echo -n "Updating $FROM... "
+svn up $FROM
+
+echo -n "Updating $TO... "
+svn up $TO
+
+echo "Merging $FROM into $TO... "
+svn merge -rCOMMITTED:HEAD $FROM $TO

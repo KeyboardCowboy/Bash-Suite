@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# mac.cfg
+# MAC SPECIFIC SETTINGS AND FUNCTIONS
+
+# Aliases
+alias kopen="open -a 'Komodo Edit'"
+alias kIn="cp -R /Volumes/CHRISTHUMB/komodo/tools/Shared ~/Library/Application\ Support/KomodoEdit/6.1/tools/Shared"
+alias bashIn="cp -R /Volumes/CHRISTHUMB/bash_config/global/ ~/.bash_config/global/"
+alias thumbOut="sudo umount /Volumes/CHRISTHUMB; echo 'CHRISTHUMB Unmounted'"
+
+# Export the bash profile to a thumbdrive
+function bashOut() {
+  THUMB=/Volumes/CHRISTHUMB/bash_config/global
+  BASHD="$SVN_BASH_REPO/global"
+
+  sudo rm -rf $THUMB/*
+  svn export --force $BASHD $THUMB
+}
+
+# Export the komodo tools to a thumbdrive
+function kOut() {
+  THUMB=/Volumes/CHRISTHUMB/komodo/tools
+  #TOOLD=~/Library/\"Application Support\"/KomodoEdit/6.1/tools/
+
+  sudo rm -rf $THUMB/*
+  cp -R ~/Library/Application\ Support/KomodoEdit/6.1/tools/Shared $THUMB
+}
+
+# Add a spacer to the dock
+function DockSpacer() {
+  defaults write com.apple.dock persistent-apps -array-add '{tile-data={}; tile-type="spacer-tile";}'
+  killall Dock
+}
+
+# Reset Quicksilver if results start getting wonky
+#function resetQS() {
+#
+#}

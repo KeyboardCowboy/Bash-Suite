@@ -1,0 +1,30 @@
+# File: drush-alias.func
+# Author: Chris Albrecht
+# Description: Function file to install the drush alias file on a server.
+
+FPATH="/etc/drush/aliases.drushrc.php"
+
+cains_checkvar SVN_BASH_REPO
+
+# Make sure /etc/drush exists
+if [ ! -d /etc/drush ]; then
+  sudo mkdir /etc/drush
+fi
+
+# Ask the user if we can overwrite an existing file
+if [ -f $FPATH ]; then
+  read -p "$PRE $FPATH already exists. OK to overwrite it? (y/n) " X
+  if [ "$X" != "y" ]; then
+    echo "$PRE Installation cancelled."
+    exit 1
+  fi
+fi
+
+# Extract the file from the repository.
+sudo svn export --force $SVN_BASH_REPO/global/lib/aliases.drushrc.php /etc/drush/aliases.drushrc.php
+
+# Open the file for editing
+if [ -f /etc/drush/aliases.drushrc.php ]; then
+  sudo vi /etc/drush/aliases.drushrc.php
+  echo "$PRE Installation complete."
+fi
