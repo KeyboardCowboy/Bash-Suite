@@ -1,9 +1,0 @@
-#!/bin/bash
-#
-# drupal.cfg
-# DRUPAL SPECIFIC SETTINGS AND FUNCTIONS
-
-# Aliases
-alias robots="find *.txt -not -iname 'robots.txt' -exec  rm {} \; ;"
-alias settings="cp sites/default/default.settings.php sites/default/settings.php"
-
