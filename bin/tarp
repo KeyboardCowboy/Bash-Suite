@@ -36,6 +36,8 @@ done < $1/*.info
 # Strip off the version text so we are left with just the version number
 VERSION=${VERSION/version = /}
 VERSION=${VERSION/version=/}
+VERSION=${VERSION/\"/}
+VERSION=${VERSION/\"/}
 
 # Tar the project
 TARFILE="$1-$VERSION.tar"

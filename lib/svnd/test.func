@@ -1,4 +1,13 @@
 
-echo $(drupal_get_version_core)
+#svn list $SVN_REPO/drupal/modules/matryoshka/7.x/tags
 
+STRING=`svn list $SVN_REPO/drupal/modules/matryoshka/7.x/tags`
+VER=$(echo $STRING | tr " " "\n")
 
+echo "The versions are"
+i=1
+for V in $VER; do
+  ARR[$i]=$V
+  echo "[$i] $V"
+  ((i++))
+done

@@ -11,9 +11,6 @@ svn_req
 # Require repo access
 req_var SVN_REPO
 
-FNAME=$(drupal_get_project_filename)
-DNAME=$(drupal_get_project_name)
-
 # Make sure we have a tags directory
 TAGS=$(svn_get_url_tags)
 if [ -z "$TAGS" ]; then

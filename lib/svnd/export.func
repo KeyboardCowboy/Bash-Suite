@@ -29,10 +29,23 @@ req_local NAME
 req_local CORE
 
 # Ask the user for the version to export
-svn list $SVN_REPO/drupal/${TYPE}s/$NAME/$CORE/tags
-read -p "$PRE Select version: " VERSION
+decho
+VERSIONS=`svn list $SVN_REPO/drupal/${TYPE}s/$NAME/$CORE/tags`
+VARR=$(echo $VERSIONS | tr " " "\n")
+i=1
+for V in $VARR; do
+  V=${V/\//}
+  ARR[$i]=$V
+  echo "[$i] $V"
+  ((i++))
+done
+decho
+read -p "$PRE Select version: " VID
 
-read -p "$PRE Remove the contents from the current directory (`pwd`) and download the new project (y/n)? " CONT
+VERSION=${ARR[$VID]}
+OLD_VER=$(drupal_get_project_version_full)
+
+read -p "$PRE Remove version $OLD_VER and install version $VERSION (y/n)? " CONT
 if [ "$CONT" == "y" ]; then
   TMPDIR="./.tmp_$TYPE"
 

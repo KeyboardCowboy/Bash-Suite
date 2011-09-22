@@ -38,6 +38,8 @@ function drupal_get_project_filename() {
     NAME=${NAME:2}
     NAME=${NAME%".info"}
     echo $NAME
+  else
+    echo ${PWD##*/}
   fi
 }
 
@@ -45,18 +47,22 @@ function drupal_get_project_filename() {
 # Get the name of the drupal module or theme
 ##
 function drupal_get_project_name() {
-  while read line
-  do
-    if [ "${line:0:4}" == "name" ]; then
-      NAME=${line}
-    fi
-  done < *.info
+  if [ -f *.info ]; then
+    while read line
+    do
+      if [ "${line:0:4}" == "name" ]; then
+        NAME=${line}
+      fi
+    done < *.info
 
-  # Strip off the name text so we are left with just the project name
-  NAME=${NAME/name = /}
-  NAME=${NAME/name=/}
-  NAME=${NAME//\"/}
-  echo $NAME
+    # Strip off the name text so we are left with just the project name
+    NAME=${NAME/name = /}
+    NAME=${NAME/name=/}
+    NAME=${NAME//\"/}
+    echo $NAME
+  else
+    echo ${PWD##*/}
+  fi
 }
 
 ##
@@ -98,13 +104,15 @@ function drupal_get_project_version_full() {
 }
 
 ##
-# Get the type of project we're dealing with: module, theme or feature.
+# Get the type of project we're dealing with: project, module, theme or feature.
 #
 function drupal_get_project_type() {
   local PWD=`pwd`
 
   # Use the current directory to determine where this project lives
-  if [[ $PWD == */themes/* ]]; then
+  if [ -f $PWD/sites/default/default.settings.php ]; then
+    echo 'project'
+  elif [[ $PWD == */themes/* ]]; then
     echo 'theme'
   else
     if [[ $PWD == */modules/custom/features/* ]]; then
