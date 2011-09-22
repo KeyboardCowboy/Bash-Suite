@@ -1,4 +1,0 @@
-
-echo $(drupal_get_version_core)
-
-
