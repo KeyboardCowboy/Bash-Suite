@@ -1,0 +1,47 @@
+#!/bin/bash
+# List the available tags for a project
+#
+# Variables Required: PROJECT_TYPE, PROJECT_NAME, CORE_VERSION
+
+# Make sure we can connect to the repo
+req_var SVN_REPO
+
+TYPE=$(drupal_get_project_type)
+FNAME=$(drupal_get_project_filename)
+DNAME=$(drupal_get_project_name)
+CORE=$(drupal_get_version_core)
+
+# If we can't get the core from the drupal install, try the module
+if [ -z "$CORE" ]; then
+  CORE=$(drupal_get_project_version_core)
+fi
+
+# If these variables are not set, ask the user
+if [ -z "$FNAME" ]; then
+  read -p "$PRE Project name: " FNAME
+fi
+if [ -z "$CORE" ]; then
+  read -p "$PRE Drupal core version: " CORE
+fi
+
+# If there is no DNAME, use FNAME
+if [ -z "$DNAME" ]; then
+  DNAME=$FNAME
+fi
+
+# Make sure all the variables are set
+req_local TYPE
+req_local FNAME
+req_local CORE
+
+CURVER=$(drupal_get_project_version_full)
+
+echo -e "${YELLOW}$PRE $DNAME $CURVER has available tags:"
+decho
+
+# Full projects have different paths
+if [ "$TYPE" == "project" ]; then
+  svn list $SVN_REPO/drupal/${TYPE}s/$FNAME/tags
+else
+  svn list $SVN_REPO/drupal/${TYPE}s/$FNAME/$CORE/tags
+fi

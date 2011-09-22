@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# File: svnify
+# Author: Chris Albrecht
+# Date: 2011/jul/27
+#
+# Import a directory to subversion then check it back out.
+
+PATH=$2
+
+# Require some variables
+req_var SVN_REPO
+req_local PATH
+
+# Import the directory into svn
+/usr/bin/svn import . $SVN_REPO/$PATH -m 'Initial import.'
+
+# Check out the directory, overriding the existing files
+/usr/bin/svn co --force $SVN_REPO/$PATH .

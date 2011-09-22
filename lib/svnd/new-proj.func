@@ -1,0 +1,17 @@
+#!/bin/bash
+# File: new-proj.func
+# Author: Chris Albrecht
+# Date: 2001-aug-19
+#
+# This function file will create the necessary version and project structure
+# directories in SVN given the base project path.
+
+# Get the relative path for the project
+PATH=$2
+
+# Require some variables to be set
+req_var SVN_REPO
+req_local PATH
+
+# Create the directories
+/usr/bin/svn mkdir --parents $SVN_REPO/$PATH/6.x/trunk $SVN_REPO/$PATH/6.x/tags $SVN_REPO/$PATH/6.x/branches $SVN_REPO/$PATH/7.x/trunk $SVN_REPO/$PATH/7.x/tags $SVN_REPO/$PATH/7.x/branches $SVN_REPO/$PATH/8.x/trunk $SVN_REPO/$PATH/8.x/tags $SVN_REPO/$PATH/8.x/branches -m "Creating directory structure for new project at $PATH"
