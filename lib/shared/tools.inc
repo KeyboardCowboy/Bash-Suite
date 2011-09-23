@@ -146,6 +146,16 @@ function drupal_req_module_root() {
 }
 
 ##
+# Determine if we are in the root directory of a Drupal module, theme or site.
+##
+function drupal_req_site_or_module_root() {
+  if [ ! -f *.info ] && [ ! -f "sites/default/default.settings.php" ]; then
+    echo "$PRE You must be in either a Drupal project or webroot directory to run this function."
+    exit 1
+  fi
+}
+
+##
 # Get the URL of the directory in the repository
 ##
 function svn_get_url() {
