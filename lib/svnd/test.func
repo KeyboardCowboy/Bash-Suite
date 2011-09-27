@@ -1,13 +1,9 @@
 
-#svn list $SVN_REPO/drupal/modules/matryoshka/7.x/tags
+URL=$(svn_get_url)
+TRUNK=$(svn_get_url_trunk)
+TAGS=${URL//\/trunk*/}
+TAGS="$TAGS/tags"
 
-STRING=`svn list $SVN_REPO/drupal/modules/matryoshka/7.x/tags`
-VER=$(echo $STRING | tr " " "\n")
-
-echo "The versions are"
-i=1
-for V in $VER; do
-  ARR[$i]=$V
-  echo "[$i] $V"
-  ((i++))
-done
+echo "URL is $URL"
+echo "TAGS is $TAGS"
+echo "TRUNK is $TRUNK"

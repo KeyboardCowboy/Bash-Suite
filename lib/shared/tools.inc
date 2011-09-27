@@ -174,8 +174,10 @@ function svn_get_url() {
 ##
 function svn_get_url_trunk() {
   local URL=$(svn_get_url)
-  if [ ${URL:(-5)} == "trunk" ]; then
-    echo $URL
+  if [[ "$URL" =~ "/trunk" ]]; then
+    TRUNK=${URL//\/trunk*/}
+    TRUNK="$TRUNK/trunk"
+    echo $TRUNK
   fi
 }
 
@@ -184,8 +186,9 @@ function svn_get_url_trunk() {
 ##
 function svn_get_url_tags() {
   local URL=$(svn_get_url)
-  if [ ${URL:(-5)} == "trunk" ]; then
-    TAGS=${URL/%trunk/tags}
+  if [[ "$URL" =~ "/trunk" ]]; then
+    TAGS=${URL//\/trunk*/}
+    TAGS="$TAGS/tags"
     echo $TAGS
   fi
 }

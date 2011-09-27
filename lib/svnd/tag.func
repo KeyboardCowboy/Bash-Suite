@@ -23,7 +23,7 @@ if [ "$X" != 'y' ]; then
 fi
 
 # Attempt to get the TRUNK and TAG paths from the URL
-TRUNK=$(svn_get_url_trunk)
+URL=$(svn_get_url)
 TAGS=$(svn_get_url_tags)
 
 # If no name or version were passed in, try to get them from the project.
@@ -45,11 +45,11 @@ if [ -z "$VERSION" ]; then
 fi
 
 # Make sure we have all the necessary data to move forward
-if [ -z "$TRUNK" ] || [ -z "$TAGS" ] || [ -z "$NAME" ] || [ -z "$VERSION" ]; then
+if [ -z "$URL" ] || [ -z "$TAGS" ] || [ -z "$NAME" ] || [ -z "$VERSION" ]; then
   echo "$PRE Unable to gather the necessary data to tag this project."
-  echo "$PRE TRUNK=$TRUNK, TAGS=$TAGS, NAME=$NAME, VERSION=$VERSION"
+  echo "$PRE URL=$URL, TAGS=$TAGS, NAME=$NAME, VERSION=$VERSION"
   exit 1
 fi
 
 echo "$PRE Tagging $NAME for release ($VERSION)."
-svn copy $TRUNK $TAGS/$VERSION -m "Tagging $NAME for release ($VERSION)."
+svn copy $URL $TAGS/$VERSION -m "Tagging $NAME for release ($VERSION)."
