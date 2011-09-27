@@ -41,7 +41,10 @@ if [ -z "$NAME" ]; then
 fi
 
 if [ -z "$VERSION" ]; then
-  read -p "$PRE Project Version: " VERSION
+  CORE=$(drupal_get_version_core)
+
+  read -p "$PRE Project Version: $CORE-" VERSION
+  VERSION="$CORE-$VERSION"
 fi
 
 # Make sure we have all the necessary data to move forward
