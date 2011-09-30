@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+# Delete a specific tag.
+#
+
+# Require SVN
+svn_req
+
+# Require repo access
+req_var SVN_REPO
+
+FNAME=$(drupal_get_project_filename)
+DNAME=$(drupal_get_project_name)
+
+# If there is no DNAME, use FNAME
+if [ -z "$DNAME" ]; then
+  DNAME=$FNAME
+fi
+
+# Make sure we have a tags directory
+TAGS=$(svn_get_url_tags)
+if [ -z "$TAGS" ]; then
+  echo "$PRE Unable to locate tags directory."
+  exit 1
+fi
+
+# Ask the user for the version to delete
+decho
+VERSIONS=`svn list $TAGS`
+VARR=$(echo $VERSIONS | tr " " "\n")
+i=1
+for V in $VARR; do
+  V=${V/\//}
+  ARR[$i]=$V
+  echo "[$i] $V"
+  ((i++))
+done
+decho
+read -p "$PRE Select version: " VID
+
+VERSION=${ARR[$VID]}
+
+# Confirm deletion
+read -p "$PRE Are you sure you want to permanently delete the tag $VERSION (y/n)? " X
+read -p "$PRE Commit message: " M
+
+if [ "$X" == "y" ]; then
+  svn rm "$TAGS/$VERSION" -m "Deleting $DNAME tag $VERSION.  $M"
+else
+  echo "$PRE Deletion cancelled.  Tag $VERSION was not deleted."
+fi

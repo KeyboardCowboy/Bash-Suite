@@ -1,9 +1,11 @@
 
-URL=$(svn_get_url)
-TRUNK=$(svn_get_url_trunk)
-TAGS=${URL//\/trunk*/}
-TAGS="$TAGS/tags"
 
-echo "URL is $URL"
-echo "TAGS is $TAGS"
-echo "TRUNK is $TRUNK"
+
+function out_of_scope() {
+  VAR=$1
+  echo "VAR = $VAR."
+}
+
+echo $(out_of_scope) param
+
+

@@ -202,3 +202,31 @@ function svn_req() {
     exit 1
   fi
 }
+
+##
+# Display a list of tags and allow the user to select one, returning the value.
+##
+function svn_select_tag_version() {
+  TAGS=$(svn_get_url_tags)
+  if [ -z "$TAGS" ]; then
+    echo "$PRE Unable to locate tags directory."
+    exit 1
+  fi
+
+  # Ask the user for the version to export
+  decho
+  VERSIONS=`svn list $TAGS`
+  VARR=$(echo $VERSIONS | tr " " "\n")
+  i=1
+  for V in $VARR; do
+    V=${V/\//}
+    ARR[$i]=$V
+    echo "[$i] $V"
+    ((i++))
+  done
+  decho
+  read -p "$PRE Select version: " VID
+
+  VERSION=${ARR[$VID]}
+  echo $VERSION
+}

@@ -5,7 +5,7 @@
 
 COPY=$2
 
-# Require SNV
+# Require SVN
 svn_req
 
 # Require repo access
