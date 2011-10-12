@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# File: ci.func
+# File: commit.func
 # Description: Commit changes to SVN and GIT, push them to GIT
 
 # Get the commit message
@@ -11,10 +11,10 @@ if [ -z "$M" ]; then
   git commit
 else
   echo "$PRE Committing to SVN"
-  svn ci -m "$M"
+  svn ci -m $M
 
   echo "$PRE Committing to GIT"
-  git commit -m "$M"
+  git commit -m $M
 fi
 
 echo "$PRE Pushing to GIT"

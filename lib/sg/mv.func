@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# File: rm.func
+# Description: Move/Rename files in an SVN and GIT repo.
+
+# Get the files
+FROM=$2
+TO=$3
+
+if [ -f "$FROM" ] || [ -d "$FROM" ]; then
+  # GIT will perform the action MV command.  Since the file will then be missing,
+  # SVN will remove and add.
+  git mv $FROM $TO
+
+  svn rm --force $FROM
+  svn add $TO
+fi

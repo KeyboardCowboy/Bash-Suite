@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# File: rm.func
+# Description: Remove files from SVN and GIT repos.
+
+# Get the file
+FILE=$2
+
+if [ -f "$FILE" ]; then
+  git rm $FILE
+  svn rm --force $FILE
+fi
