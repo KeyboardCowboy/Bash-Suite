@@ -173,10 +173,17 @@ function svn_get_url() {
 # Get the URL to the TRUNK directory for a project
 ##
 function svn_get_url_trunk() {
+  # Get the SUBDIR if it was passed
+  if [ -n "$1" ]; then
+    local SUBDIR="/$1"
+  else
+    local SUBDIR=""
+  fi
   local URL=$(svn_get_url)
-  if [[ "$URL" =~ "/trunk" ]]; then
+
+  if [[ $URL == */trunk$SUBDIR ]]; then
     TRUNK=${URL//\/trunk*/}
-    TRUNK="$TRUNK/trunk"
+    TRUNK="$TRUNK/trunk$SUBDIR"
     echo $TRUNK
   fi
 }
@@ -185,8 +192,15 @@ function svn_get_url_trunk() {
 # Get the URL to the TAGS directory for a project
 ##
 function svn_get_url_tags() {
+  # Get the SUBDIR if it was passed
+  if [ -n "$1" ]; then
+    local SUBDIR="/$1"
+  else
+    local SUBDIR=""
+  fi
   local URL=$(svn_get_url)
-  if [[ "$URL" =~ "/trunk" ]]; then
+
+  if [[ "$URL" == */trunk$SUBDIR ]]; then
     TAGS=${URL//\/trunk*/}
     TAGS="$TAGS/tags"
     echo $TAGS

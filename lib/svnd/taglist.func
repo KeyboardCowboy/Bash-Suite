@@ -7,11 +7,14 @@
 req_var SVN_REPO
 svn_req
 
+# Get a subdirectory if there is one
+SUBDIR=$2
+
 FNAME=$(drupal_get_project_filename)
 DNAME=$(drupal_get_project_name)
 
 # Make sure we have a tags directory
-TAGS=$(svn_get_url_tags)
+TAGS=$(svn_get_url_tags $SUBDIR)
 if [ -z "$TAGS" ]; then
   echo "$PRE Unable to locate tags directory."
   exit 1

@@ -1,11 +1,16 @@
 
+URL=$(svn_get_url)
+TRUNK=$(svn_get_url_trunk $2)
+TAGS=$(svn_get_url_tags $2)
 
+echo "URL is $URL"
+echo "TRUNK is $TRUNK"
+echo "TAGS is $TAGS"
 
-function out_of_scope() {
-  VAR=$1
-  echo "VAR = $VAR."
+function test_me() {
+  echo "I can see $1"
 }
 
-echo $(out_of_scope) param
+NEWVAR=$(test_me $URL)
 
-
+#echo $NEWVAR
