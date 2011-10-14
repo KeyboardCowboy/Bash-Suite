@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# File: verison.func
+# Description: Get the project name and version from the info file.
+
+NAME=$(drupal_get_project_name)
+VERSION=$(drupal_get_project_version_full)
+
+decho
+echo "$PRE $NAME $VERSION"
+decho
