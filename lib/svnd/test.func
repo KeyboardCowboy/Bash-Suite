@@ -3,6 +3,10 @@ URL=$(svn_get_url)
 TRUNK=$(svn_get_url_trunk $2)
 TAGS=$(svn_get_url_tags $2)
 
+decho
+svn_get_url
+decho
+
 echo "URL is $URL"
 echo "TRUNK is $TRUNK"
 echo "TAGS is $TAGS"
@@ -14,3 +18,6 @@ function test_me() {
 NEWVAR=$(test_me $URL)
 
 #echo $NEWVAR
+
+echo $(pwd)
+

@@ -159,9 +159,8 @@ function drupal_req_site_or_module_root() {
 # Get the URL of the directory in the repository
 ##
 function svn_get_url() {
-  DATA=`svn info --xml`
-  local URL=`expr "$DATA" : '.*\(\<url\>.*\</url\>\)'`
-
+  URL=`svn info --xml | grep "<url>"`
+  
   # Strip the tags
   URL=${URL/<url>/}
   URL=${URL/<\/url>/}
