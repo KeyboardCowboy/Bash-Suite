@@ -39,6 +39,19 @@ if [ -z "$VERSION" ]; then
   VERSION="$CORE-$VERSION"
 fi
 
+# If we can't derrive a tags directory, check with the user to see if there is
+# a subdomain on the trunk
+if [ -z $TAGS ]; then
+  echo "$PRE Tags directory was not found. If the site lives in a subdirectory of the trunk, enter it now or 'q' to quit."
+  read -p "$PRE Subdirectory: " SUBDIR
+
+  if [ -z $SUBDIR ] || [ "$SUBDIR" == 'q' ]; then
+    exit 1;
+  else
+    TAGS=$(svn_get_url_tags $SUBDIR)
+  fi
+fi
+
 # Make sure we have all the necessary data to move forward
 if [ -z "$URL" ] || [ -z "$TAGS" ] || [ -z "$NAME" ] || [ -z "$VERSION" ]; then
   echo "$PRE Unable to gather the necessary data to tag this project."
