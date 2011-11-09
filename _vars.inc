@@ -16,6 +16,9 @@ export HOSTS_PATH=
 export MYSQL_USER=
 export MYSQL_PASS=
 
+export APACHE_USER=
+export APACHE_GROUP=
+
 export SVN_BASH_REPO=
 export SVN_REPO=
 
