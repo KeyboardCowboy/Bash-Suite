@@ -9,12 +9,13 @@ MODIFIER=$3
 req_var SVN_REPO
 req_local ITEM
 
+LIBRARIES=`drush dd`/sites/all/libraries
+
 case $ITEM in
   'changelog')
     svn export $SVN_REPO/drupal/standards/DEFAULT_CHANGELOG.txt ./CHANGELOG.txt;;
 
   'ckeditor')
-    LIBRARIES=`drush dd`/sites/all/libraries
     if [ ! -d $LIBRARIES ]; then
       mkdir $LIBRARIES
     fi
@@ -25,6 +26,15 @@ case $ITEM in
     cd $LIBRARIES
     tar -zxf ckeditor_3.6.2.tar.gz
     cd $HERE
+    ;;
+
+  'cycle')
+    if [ ! -d $LIBRARIES ]; then
+      mkdir $LIBRARIES
+    fi
+    wget --no-check-certificate https://raw.github.com/malsup/cycle/master/jquery.cycle.all.js
+    mkdir $LIBRARIES/jquery.cycle
+    mv ./jquery.cycle.all.js $LIBRARIES/jquery.cycle
     ;;
 
   'module6')

@@ -23,3 +23,5 @@ export SVN_BASH_REPO=
 export SVN_REPO=
 
 export WEBROOT=/
+
+export TAGTAR_DIR=

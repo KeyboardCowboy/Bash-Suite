@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# Create a tarball of a given tag.
+#
+
+# Get the destination location
+DEST=$2
+if [ -z "$DEST" ] || [ ! -d "$DEST" ]; then
+  if [ -d "$TAGTAR_DIR" ]; then
+    DEST=$TAGTAR_DIR
+  else
+    DEST="."
+  fi
+fi
+DEST="$DEST/"
+
+# Require SVN
+svn_req
+
+# Require repo access
+req_var SVN_REPO
+
+# Make sure we have a tags directory
+TAGS=$(svn_get_url_tags)
+if [ -z "$TAGS" ]; then
+  echo "$PRE Unable to locate tags directory."
+  exit 1
+fi
+
+# Ask the user for the version to export
+decho
+VERSIONS=`svn list $TAGS`
+VARR=$(echo $VERSIONS | tr " " "\n")
+i=1
+for V in $VARR; do
+  V=${V/\//}
+  ARR[$i]=$V
+  echo "[$i] $V"
+  ((i++))
+done
+decho
+read -p "$PRE Select version: " VID
+
+VERSION=${ARR[$VID]}
+
+# Create a temp directory to store the project while we tar it
+NAME=$(drupal_get_project_filename)
+FULLNAME="$NAME-$VERSION"
+MYTMPDIR="$TMPDIR/$FULLNAME"
+mkdir $MYTMPDIR
+
+# Export the tag into our tmpdir
+echo "$PRE Getting tag $NAME-$VERSION"
+svn export -q --force $TAGS/$VERSION $MYTMPDIR
+
+# Tar up the tag
+echo "$PRE Creating tarball in $DEST$FULLNAME"
+tar -cz --directory=$TMPDIR --file=$DEST$FULLNAME.tgz "$FULLNAME"
+
+# Clean up our temp dir
+rm -rf $MYTMPDIR
