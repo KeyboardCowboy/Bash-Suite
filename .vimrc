@@ -4,4 +4,3 @@ set shiftwidth=2
 set expandtab
 set number
 syntax on
-colorscheme brookstream
