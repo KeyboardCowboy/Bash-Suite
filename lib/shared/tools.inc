@@ -160,7 +160,7 @@ function drupal_req_site_or_module_root() {
 ##
 function svn_get_url() {
   URL=`svn info --xml | grep "<url>"`
-  
+
   # Strip the tags
   URL=${URL/<url>/}
   URL=${URL/<\/url>/}
@@ -178,13 +178,25 @@ function svn_get_url_trunk() {
   else
     local SUBDIR=""
   fi
-  local URL=$(svn_get_url)
+  DIR=$(get_normal_url $SUBDIR)
+  DIR="$DIR/trunk"
+  echo $DIR
+}
 
-  if [[ $URL == */trunk$SUBDIR ]]; then
-    TRUNK=${URL//\/trunk*/}
-    TRUNK="$TRUNK/trunk$SUBDIR"
-    echo $TRUNK
+##
+# Get the URL to the BRANCHES directory for a project
+##
+function svn_get_url_branches() {
+  # Get the SUBDIR if it was passed
+  if [ -n "$1" ]; then
+    local SUBDIR="/$1"
+  else
+    local SUBDIR=""
   fi
+
+  DIR=$(get_normal_url $SUBDIR)
+  DIR="$DIR/branches"
+  echo $DIR
 }
 
 ##
@@ -197,13 +209,9 @@ function svn_get_url_tags() {
   else
     local SUBDIR=""
   fi
-  local URL=$(svn_get_url)
-
-  if [[ "$URL" == */trunk$SUBDIR ]]; then
-    TAGS=${URL//\/trunk*/}
-    TAGS="$TAGS/tags"
-    echo $TAGS
-  fi
+  DIR=$(get_normal_url $SUBDIR)
+  DIR="$DIR/tags"
+  echo $DIR
 }
 
 ##
@@ -242,4 +250,25 @@ function svn_select_tag_version() {
 
   VERSION=${ARR[$VID]}
   echo $VERSION
+}
+
+##
+# Get the base URL to a project location in the repo so we can append the proper
+# branches/tags/trunk subdirectory
+#
+function get_normal_url() {
+  SUBDIR=$1
+  URL=$(svn_get_url)
+
+  if [[ "$URL" == */trunk$SUBDIR ]]; then
+    DIR=${URL//\/trunk*/}
+  fi
+  if [[ "$URL" == */tags$SUBDIR/* ]]; then
+    DIR=${URL//\/tags*/}
+  fi
+  if [[ "$URL" == */branches$SUBDIR/* ]]; then
+    DIR=${URL//\/branches*\/*/}
+  fi
+
+  echo $DIR
 }

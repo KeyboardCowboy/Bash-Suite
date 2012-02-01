@@ -8,7 +8,7 @@
 # instances.
 
 ACTION=$1
-PRE="SVND:"
+PRE=`echo -e "${YELLOW}SVND:${RESET}"`
 CROOT=~/.bash_config/global/lib/svnd
 
 # Load the global shared toolset
