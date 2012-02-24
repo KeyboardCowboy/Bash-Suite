@@ -61,9 +61,10 @@ if [ "$CONT" == "y" ]; then
     svn commit -q -m "Updating $NAME: Installing new version ($VERSION)."
   # If this isn't a subversioned project, perform a simple 'cut n paste'
   else
-    svn export --force $SVN_REPO/drupal/${TYPE}s/$NAME/$CORE/tags/$VERSION $TMPDIR
-    sudo rm -Rv *
-    sudo mv -fv $TMPDIR/* ./
+    svn export -q --force $SVN_REPO/drupal/${TYPE}s/$NAME/$CORE/tags/$VERSION $TMPDIR
+    sudo rm -R *
+    sudo mv -f $TMPDIR/* ./
     sudo rm -R $TMPDIR
   fi
+  svnd version
 fi

@@ -26,6 +26,7 @@ URL=$(svn_get_url)
 TAGS=$(svn_get_url_tags $SUBDIR)
 NAME=$(drupal_get_project_name)
 VERSION=$(drupal_get_project_version_full)
+FNAME=$(drupal_get_project_filename)
 
 # If a project name or version could not be acquired, ask the user.
 if [ -z "$NAME" ]; then
@@ -60,4 +61,12 @@ if [ -z "$URL" ] || [ -z "$TAGS" ] || [ -z "$NAME" ] || [ -z "$VERSION" ]; then
 fi
 
 echo "$PRE Tagging $NAME for release ($VERSION)."
+
+# Add a line to the changelog if one exists.
+if [ -f "CHANGELOG.txt" ]; then
+  CL="================================================================================\n+ TAGGING $FNAME-$VERSION FOR RELEASE.\n"
+  echo -e $CL | cat - CHANGELOG.txt > .tmpCL && mv .tmpCL CHANGELOG.txt
+  svn ci CHANGELOG.txt -qm 'Adding tag to Changelog.'
+fi
+
 svn copy $URL $TAGS/$VERSION -m "Tagging $NAME for release ($VERSION)."

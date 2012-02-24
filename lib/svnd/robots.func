@@ -10,7 +10,7 @@ if [ ! -f "sites/default/settings.php" ]; then
 fi
 
 # Download and enable the robotstxt module
-drush -y dl robotstxt
+drush -n dl robotstxt
 drush -y en robotstxt
 
 # Create a backup directory if one doesn't already exist
