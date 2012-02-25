@@ -3,6 +3,13 @@
 # Description: Various global tools for bash functionality.
 
 ##
+# Get a consistent datestamp.
+#
+function datestamp() {
+  echo $(date +%Y-%b-%d\ %H:%M:%S)
+}
+
+##
 # Ensure a local var is set.
 #
 function req_local() {
@@ -29,6 +36,9 @@ function req_var() {
   fi
 }
 
+################################################################################
+# Drupal Tools
+################################################################################
 ##
 # Get the name of the drupal module or theme
 ##
@@ -155,11 +165,30 @@ function drupal_req_site_or_module_root() {
   fi
 }
 
+################################################################################
+# SVN Tools
+################################################################################
+##
+# Get the current SVN branch
+##
+function svn_get_current_branch() {
+  if [ ! -d .svn ]; then
+    exit 1
+  fi
+
+  URL=$(svn_get_url)
+  if [[ "$URL" == */trunk* ]]; then
+    echo 'trunk'
+  elif [[ "$URL" == */branches/* ]]; then
+    echo $URL | sed -e 's#^'"$(svn_get_url_branches)/"'##g' | sed -e 's#/.*$##g' | awk '{print ""$1"" }'
+  fi
+}
+
 ##
 # Get the URL of the directory in the repository
 ##
 function svn_get_url() {
-  URL=`svn info --xml | grep "<url>"`
+  URL=`svn info --xml | fgrep "<url>"`
 
   # Strip the tags
   URL=${URL/<url>/}
@@ -271,4 +300,15 @@ function get_normal_url() {
   fi
 
   echo $DIR
+}
+
+################################################################################
+# GIT Tools
+################################################################################
+##
+# Get the current GIT branch
+##
+function git_get_current_branch() {
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+  echo ${ref#refs/heads/}
 }

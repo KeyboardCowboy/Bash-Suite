@@ -63,10 +63,18 @@ fi
 echo "$PRE Tagging $NAME for release ($VERSION)."
 
 # Add a line to the changelog if one exists.
-if [ -f "CHANGELOG.txt" ]; then
-  CL="================================================================================\n+ TAGGING $FNAME-$VERSION FOR RELEASE.\n"
-  echo -e $CL | cat - CHANGELOG.txt > .tmpCL && mv .tmpCL CHANGELOG.txt
-  svn ci CHANGELOG.txt -qm 'Adding tag to Changelog.'
+if [ -f "CHANGELOG.txt" ] || [ -f "NREL_CHANGELOG.txt" ]; then
+  # Get the appropriate filename.
+  if [ -f "CHANGELOG.txt" ]; then
+    FILE="CHANGELOG.txt"
+  else
+    FILE="NREL_CHANGELOG.txt"
+  fi
+
+  # Add the new lines to the file.
+  CL="================================================================================\n+ TAGGING $FNAME-$VERSION FOR RELEASE. ($(datestamp) | $(whoami))\n"
+  echo -e $CL | cat - $FILE > .tmpCL && mv .tmpCL $FILE
+  #svn ci $FILE -qm 'Adding tag to Changelog.'
 fi
 
-svn copy $URL $TAGS/$VERSION -m "Tagging $NAME for release ($VERSION)."
+#svn copy $URL $TAGS/$VERSION -m "Tagging $NAME for release ($VERSION)."
