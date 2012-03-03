@@ -1,2 +1,4 @@
 
-echo $(svn_get_current_branch)
+FILE=$(add_changelog_comment "This is my changelog comment")
+
+echo $FILE

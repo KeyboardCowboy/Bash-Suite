@@ -3,6 +3,27 @@
 # Description: Various global tools for bash functionality.
 
 ##
+# Add a comment to a changelog file
+#
+function add_changelog_comment() {
+  CL=$1
+
+  # Add a line to the changelog if one exists.
+  if [ -f "CHANGELOG.txt" ] || [ -f "NREL_CHANGELOG.txt" ]; then
+    # Get the appropriate filename.
+    if [ -f "NREL_CHANGELOG.txt" ]; then
+      FILE="NREL_CHANGELOG.txt"
+    else
+      FILE="CHANGELOG.txt"
+    fi
+
+    # Add the new lines to the file.
+    echo -e $CL | cat - $FILE > .tmpCL && mv .tmpCL $FILE
+    echo $FILE
+  fi
+}
+
+##
 # Get a consistent datestamp.
 #
 function datestamp() {
