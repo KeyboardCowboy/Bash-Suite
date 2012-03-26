@@ -1,0 +1,6 @@
+#!/bin/bash
+# File: deploy.func
+# Created: 2012-Mar-23 -- Chris Albrecht
+#
+# Deploy a tag and switch the symlink to the webroot
+
