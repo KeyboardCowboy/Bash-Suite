@@ -12,7 +12,7 @@ function add_changelog_comment() {
   drupal_req_site_or_module_root
 
   # Add a line to the changelog.
-  if [ -f "sites/default/default.settings.php" ]; then
+  if [ -f "sites/default/settings.php" ]; then
     FILE="sites/default/CHANGELOG.txt"
   else
     FILE="CHANGELOG.txt"
