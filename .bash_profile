@@ -1,7 +1,5 @@
 #!/bin/bash
 #
-# COPY THIS TO YOUR .bash_profile
-#
 # Load the system bashrc file
 if [ -f /etc/bashrc ]; then
   source /etc/bashrc

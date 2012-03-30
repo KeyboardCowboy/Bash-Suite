@@ -8,19 +8,22 @@
 function add_changelog_comment() {
   CL=$1
 
-  # Add a line to the changelog if one exists.
-  if [ -f "CHANGELOG.txt" ] || [ -f "NREL_CHANGELOG.txt" ]; then
-    # Get the appropriate filename.
-    if [ -f "NREL_CHANGELOG.txt" ]; then
-      FILE="NREL_CHANGELOG.txt"
-    else
-      FILE="CHANGELOG.txt"
-    fi
+  # Make sure we are in a root to write a changelog entry.
+  drupal_req_site_or_module_root
 
-    # Add the new lines to the file.
-    echo -e $CL | cat - $FILE > .tmpCL && mv .tmpCL $FILE
-    echo $FILE
+  # Add a line to the changelog.
+  if [ -f "sites/default/default.settings.php" ]; then
+    FILE="sites/default/CHANGELOG.txt"
+  else
+    FILE="CHANGELOG.txt"
   fi
+
+  # Make sure the file exists.
+  touch $FILE
+
+  # Add the new lines to the file.
+  echo -e $CL | cat - $FILE > .tmpCL && mv .tmpCL $FILE
+  echo $FILE
 }
 
 ##
