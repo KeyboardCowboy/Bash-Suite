@@ -32,6 +32,14 @@ class DrushMakeProject {
   protected static $self = array();
 
   /**
+   * Default to overwrite to allow recursive builds to process properly.
+   *
+   * TODO refactor this to be more selective. Ideally a merge would take place
+   * instead of an overwrite.
+   */
+  protected $overwrite = TRUE;
+
+  /**
    * Set attributes and retrieve project information.
    */
   protected function __construct($project) {
@@ -319,7 +327,7 @@ class DrushMakeProject {
             // modules/system/translations where it can be detected for import
             // by other non-default install profiles.
             if ($this->type === 'core') {
-              $profiles = drush_scan_directory($project_directory . '/profiles', '/.*/', array(), 0, FALSE);
+              $profiles = drush_scan_directory($project_directory . '/profiles', '/.*/', array(), 0, FALSE, 'filename', 0, TRUE);
               foreach ($profiles as $profile) {
                 if (is_dir($project_directory . '/profiles/' . $profile->basename)) {
                   drush_mkdir($project_directory . '/profiles/' . $profile->basename . '/translations');

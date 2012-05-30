@@ -34,6 +34,20 @@ function datestamp() {
 }
 
 ##
+# Echo an ERROR message.
+#
+function echo_error() {
+  echo -e "${RED}[ERROR]${NORMAL} $1"
+}
+
+##
+# Echo a SUCCESS message.
+#
+function echo_success() {
+  echo -e "${GREEN}[SUCCESS]${NORMAL} $1"
+}
+
+##
 # Ensure a local var is set.
 #
 function req_local() {

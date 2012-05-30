@@ -1,0 +1,61 @@
+#!/bin/bash
+# File: db
+# Created: 2012-May-29 18:01:19
+# Author: Chris Albrecht
+#
+# Create a symlink into DropBox
+
+FILE=$1
+SUBDIR=$2
+
+source ~/.bash_config/global/lib/shared/tools.inc
+
+# Require a dropbox directory
+req_var DBROOT
+
+# Require a FILE param
+req_local FILE
+
+DEST=$DBROOT
+
+# Append the subdirectory
+if [ -n "$SUBDIR" ]; then
+  DEST="$DEST/$SUBDIR"
+fi
+
+# Create the subdirectory if necessary
+if [ ! -d $DEST ]; then
+  mkdir -p $DEST
+fi
+
+# Append the file or dir name to the DEST
+DEST="$DEST/$FILE"
+
+# Create the source path
+if [ ${FILE/0/1} == "/" ]; then
+  SOURCE=$FILE
+else
+  SOURCE=`pwd`/$FILE
+fi
+
+# Check the source path
+if [ ! -f $SOURCE ] && [ ! -d $SOURCE ]; then
+  echo_error "$SOURCE does not exist."
+  exit 1
+fi
+
+# Check the destination
+if [ -f $DEST ] || [ -d $DEST ]; then
+  echo_error "$DEST already exists."
+  exit 1
+fi
+
+# Now we should have a valid source and destination, so create the link
+ln -s $SOURCE $DEST
+
+# Check the results
+if [ -h $DEST ]; then
+  echo_success "$DEST now points to $SOURCE"
+else
+  echo_error "Linking failed."
+fi
