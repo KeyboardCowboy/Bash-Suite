@@ -32,30 +32,30 @@ fi
 DEST="$DEST/$FILE"
 
 # Create the source path
-if [ ${FILE/0/1} == "/" ]; then
+if [ "${FILE/0/1}" == "/" ]; then
   SOURCE=$FILE
 else
   SOURCE=`pwd`/$FILE
 fi
 
 # Check the source path
-if [ ! -f $SOURCE ] && [ ! -d $SOURCE ]; then
-  echo_error "$SOURCE does not exist."
+if [ ! -f "$SOURCE" ] && [ ! -d "$SOURCE" ]; then
+  print_error "$SOURCE does not exist."
   exit 1
 fi
 
 # Check the destination
-if [ -f $DEST ] || [ -d $DEST ]; then
-  echo_error "$DEST already exists."
+if [ -f "$DEST" ] || [ -d "$DEST" ]; then
+  print_error "$DEST already exists."
   exit 1
 fi
 
 # Now we should have a valid source and destination, so create the link
-ln -s $SOURCE $DEST
+ln -s "$SOURCE" "$DEST"
 
 # Check the results
-if [ -h $DEST ]; then
-  echo_success "$DEST now points to $SOURCE"
+if [ -h "$DEST" ]; then
+  print_success "$DEST now points to $SOURCE"
 else
-  echo_error "Linking failed."
+  print_error "Linking failed."
 fi

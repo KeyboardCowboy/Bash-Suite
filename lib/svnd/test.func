@@ -1,4 +1,4 @@
 
-FILE=$(add_changelog_comment "This is my changelog comment")
-
-echo $FILE
+print_error "Oops! I did it again."
+print_success "Oops! I did it again."
+print_warning "Oops! I did it again."

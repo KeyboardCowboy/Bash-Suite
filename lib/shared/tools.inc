@@ -27,6 +27,18 @@ function add_changelog_comment() {
 }
 
 ##
+# Get the current column placement and the total number of columns available
+# in the current display.
+##
+function col_count() {
+  COLS=`stty size 2>&1`
+  POS=${COLS% *}
+  TOT=${COLS#* }
+
+  echo `expr $TOT`
+}
+
+##
 # Get a consistent datestamp.
 #
 function datestamp() {
@@ -36,15 +48,40 @@ function datestamp() {
 ##
 # Echo an ERROR message.
 #
-function echo_error() {
-  echo -e "${RED}[ERROR]${NORMAL} $1"
+function print_error() {
+  local STATUS=`echo -e "${RED}[error]${NORMAL}"`
+  print_message "$1" "$STATUS"
 }
 
 ##
 # Echo a SUCCESS message.
 #
-function echo_success() {
-  echo -e "${GREEN}[SUCCESS]${NORMAL} $1"
+function print_success() {
+  STATUS=`echo -e "${GREEN}[success]${NORMAL}"`
+  print_message "$1" "$STATUS"
+}
+
+##
+# Echo a WARNING message.
+#
+function print_warning() {
+  STATUS=`echo -e "${YELLOW}[warning]${YELLOW}"`
+  print_message "$1" "$STATUS"
+}
+
+##
+# Helper function for preparing messages.
+##
+function print_message() {
+  local MSG=$1
+  local STATUS=$2
+
+  local COLS=$(col_count)
+  local PAD=${#STATUS}
+  local LEN=${#MSG}
+  local GAP=`expr $COLS - $LEN + $PAD - 11`
+
+  printf "%s %${GAP}s\n" "$MSG" "$STATUS"
 }
 
 ##
