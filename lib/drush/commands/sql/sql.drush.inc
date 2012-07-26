@@ -66,7 +66,7 @@ function sql_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'examples' => array(
       'drush sql-dump --result-file=../18.sql' => 'Save SQL dump to the directory above Drupal root.',
-      'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.com',
+      'drush sql-dump --skip-tables-key=common' => 'Skip standard tables. @see example.drushrc.php',
     ),
     'options' => array(
       'result-file' => array(
@@ -150,7 +150,7 @@ function sql_drush_command() {
     'sub-options' => array(
       'sanitize' => array(
         'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
-        'sanitize-email' => 'The username for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
+        'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
         'confirm-sanitizations' => 'Prompt yes/no after importing the database, but before running the sanitizations',
       ),
     ),
@@ -175,7 +175,7 @@ function sql_drush_command() {
     'hidden' => TRUE,
     'options' => array(
       'sanitize-password' => 'The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.  Default is "password".',
-      'sanitize-email' => 'The username for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
+      'sanitize-email' => 'The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.  Default is "user+%uid@localhost".',
     ) + $db_url,
     'aliases' => array('sqlsan'),
   );
@@ -466,9 +466,17 @@ function drush_sql_build_dump_command($table_selection, $db_spec = NULL, $file =
 
   if (drush_get_option('gzip')) {
     if ($file) {
-      // Gzip the result-file
-      $exec .= "; gzip $file";
-      $file .= '.gz';
+      $escfile = drush_escapeshellarg($file);
+      if (drush_get_context('DRUSH_AFFIRMATIVE')) {
+        // Gzip the result-file without Gzip confirmation
+        $exec .= " && gzip -f $escfile";
+        $file .= '.gz';
+      }
+      else {
+        // Gzip the result-file
+        $exec .= " && gzip $escfile";
+        $file .= '.gz';
+      }
     }
     else {
       // gzip via pipe since user has not specified a file.
@@ -525,6 +533,10 @@ function _drush_sql_get_table_list($option_name) {
 function drush_sql_query($query = NULL) {
   drush_sql_bootstrap_further();
   $filename = drush_get_option('file', NULL);
+  // Enable prefix processing when db-prefix option is used.
+  if (drush_get_option('db-prefix')) {
+    drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_DATABASE);
+  }
   return _drush_sql_query($query, NULL, $filename);
 }
 
@@ -837,7 +849,7 @@ function drush_sql_dump_file(&$site_record) {
     if (!isset($dump_dir)) {
       // If this is a remote site, try to find a writable tmpdir.
       if (isset($site_record['remote-host'])) {
-        $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'));
+        $result = drush_invoke_process($site_record, 'ev', array('drush_print(drush_find_tmp())'), array(), array('integrate' => FALSE, 'override-simulated' => TRUE));
         // If the call to invoke process does not work for some reason (e.g. drush not
         // installed on the target machine), then we will just presume that the tmp dir is '/tmp'.
         if (!array_key_exists('output', $result) || empty($result['output'])) {
@@ -938,7 +950,7 @@ function _drush_sql_get_credentials($db_spec = NULL) {
       // server, but not the database.  Connect to the built-in database.
       $database = empty($db_spec['database']) ? 'master' : $db_spec['database'];
       // Host and port are optional but have defaults.
-      $host = empty($db_spec['server']) ? '.\SQLEXPRESS' : $db_spec['server'];
+      $host = empty($db_spec['host']) ? '.\SQLEXPRESS' : $db_spec['host'];
       return ' -S ' . $host . ' -d ' . $database . ' -U ' . $db_spec['username'] . ' -P ' . $db_spec['password'];
       break;
 

@@ -97,9 +97,11 @@ function drush_archive_dump($sites_subdirs = '@self') {
   // Create the unique temporary name.
   $date = gmdate('Ymd_his');
   $prefix = 'none';
-  if (!empty($full) && !empty($first['databases']['default']['default']['database'])) {
+  if (!empty($full)) {
     $first = current($full);
-    $prefix = count($sites_subdirs) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
+    if ( !empty($first['databases']['default']['default']['database']) ) {
+      $prefix = count($full) > 1 ? 'multiple_sites' : str_replace('/', '-', $first['databases']['default']['default']['database']);
+    }
   }
   $temp_dest_name = "$prefix.$date.tar";
 
@@ -166,6 +168,10 @@ function drush_archive_dump($sites_subdirs = '@self') {
   drush_shell_cd_and_exec($workdir, "$tar --exclude \"{$docroot}/sites\" {$dereference}-cf %s %s", $destination, $docroot);
   // Add sites/all to the same archive.
   drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/all");
+  // Add sites/sites.php to the same archive.
+  if (file_exists("{$docroot}/sites/sites.php")) {
+    drush_shell_cd_and_exec($workdir, "$tar {$dereference}-rf %s %s", $destination, "{$docroot}/sites/sites.php");
+  }
 
   $tmp = drush_tempdir();
   $all_dbs = array();
@@ -184,7 +190,9 @@ function drush_archive_dump($sites_subdirs = '@self') {
       );
       $table_selection = drush_sql_get_table_selection();
       list($dump_exec, $dump_file) = drush_sql_build_dump_command($table_selection, $db, $result_file);
-      drush_shell_exec($dump_exec);
+      if (!drush_shell_exec($dump_exec)) {
+        return drush_set_error('DRUSH_SQL_DUMP_FAIL', 'Database dump failed.');
+      }
       drush_shell_cd_and_exec($tmp, "$tar --dereference -rf %s %s", $destination, basename($result_file));
     }
   }

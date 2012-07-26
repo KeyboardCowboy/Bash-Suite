@@ -178,7 +178,7 @@ function core_drush_command() {
       'destination' => 'May be rsync path or site alias. See rsync documentation and example.aliases.drushrc.php.',
     ),
     'options' => array(
-      'mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -az.',
+      'mode' => 'The unary flags to pass to rsync; --mode=rultz implies rsync -rultz.  Default is -akz.',
       'RSYNC-FLAG' => 'Most rsync flags passed to drush sync will be passed on to rsync.  See rsync documentation.',
       'exclude-conf' => 'Excludes settings.php from being rsynced.  Default.',
       'include-conf' => 'Allow settings.php to be rsynced. Default is to exclude settings.php.',
@@ -292,7 +292,7 @@ function core_drush_command() {
     ),
     'examples' => array(
       'drush qd' => 'Download and install stable release of Drupal into a timestamped directory, start server, and open the site logged in as admin.',
-      'drush qd --profile=minimal --dev --cache --default-major=8 --yes' => 'Fire up dev release of Drupal site with minimal install profile.',
+      'drush qd --profile=minimal --dev --cache --core=drupal-8.x --yes' => 'Fire up dev release of Drupal site with minimal install profile.',
       'drush qd testsite devel --server=:8081/admin --browser=firefox --cache --yes' => 'Fire up stable release (using the cache) of Drupal site called "testsite", download and enable devel module, start a server on port 8081 and open /admin in firefox.',
       'drush qd commercesite --core=commerce_kickstart --profile=commerce_kickstart --cache --yes --watchdog' => 'Download and install the "Commerce Kickstart" distribution/install profile, display watchdog messages on the server console.',
     ),
@@ -483,6 +483,9 @@ function _core_path_aliases($project = '') {
       }
       elseif (function_exists('file_directory_path')) {
         $paths['%files'] = file_directory_path();
+      }
+      if (function_exists('file_directory_temp')) {
+        $paths['%temp'] = file_directory_temp();
       }
       // If the 'project' parameter was specified, then search
       // for a project (or a few) and add its path to the path list
@@ -882,6 +885,9 @@ function drush_core_quick_drupal_options(&$items) {
   );
   $pm = pm_drush_command();
   foreach ($pm['pm-download']['options'] as $option => $description) {
+    if (is_array($description)) {
+      $description = $description['description'];
+    }
     $options[$option] = 'Download option: ' . $description;
   }
   // Unset a few options that are not usable here, as we control them ourselves
@@ -891,6 +897,9 @@ function drush_core_quick_drupal_options(&$items) {
   unset($options['default-major']);
   unset($options['use-site-dir']);
   foreach ($items['site-install']['options'] as $option => $description) {
+    if (is_array($description)) {
+      $description = $description['description'];
+    }
     $options[$option] = 'Site install option: ' . $description;
   }
   unset($options['sites-subdir']);

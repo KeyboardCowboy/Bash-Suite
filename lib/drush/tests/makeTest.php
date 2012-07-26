@@ -176,7 +176,57 @@ class makeMakefileCase extends Drush_CommandTestCase {
   }
 
   function testMakeSubtree() {
-    $this->runMakefileTest('subtree');
+    $config = $this->getMakefile('subtree');
+
+    $makefile = $this->makefile_path . DIRECTORY_SEPARATOR . $config['makefile'];
+    $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'subtree';
+    $this->drush('make', array('--no-core', $makefile, $install_directory));
+
+    $files['nivo-slider'] = array(
+      'exists' => array(
+        'jquery.nivo.slider.js',
+        'jquery.nivo.slider.pack.js',
+        'license.txt',
+        'nivo-slider.css',
+        'README',
+      ),
+      'notexists' => array(
+        '__MACOSX',
+        'nivo-slider',
+      ),
+    );
+    $files['fullcalendar'] = array(
+      'exists' => array(
+        'fullcalendar.css',
+        'fullcalendar.js',
+        'fullcalendar.min.js',
+        'fullcalendar.print.css',
+        'gcal.js',
+      ),
+      'notexists' => array(
+        'changelog.txt',
+        'demos',
+        'fullcalendar',
+        'GPL-LICENSE.txt',
+        'jquery',
+        'MIT-LICENSE.txt',
+      ),
+    );
+    $basedir = $install_directory . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'all' . DIRECTORY_SEPARATOR . 'libraries';
+    foreach ($files as $lib => $details) {
+      $dir =  $basedir . DIRECTORY_SEPARATOR . $lib;
+      if (!empty($details['exists'])) {
+        foreach ($details['exists'] as $file) {
+          $this->assertFileExists($dir . DIRECTORY_SEPARATOR . $file);
+        }
+      }
+
+      if (!empty($details['notexists'])) {
+        foreach ($details['notexists'] as $file) {
+          $this->assertFileNotExists($dir . DIRECTORY_SEPARATOR . $file);
+        }
+      }
+    }
   }
 
   function testMakeMd5Succeed() {
@@ -244,7 +294,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
    */
   function testMakeMoveBuild() {
     // Manually download a module.
-    $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/modules', 'yes' => NULL));
+    $this->drush('pm-download', array('cck_signup'), array('destination' => UNISH_SANDBOX . '/sites/all/modules/contrib', 'yes' => NULL));
 
     // Build a make file.
     $config = $this->getMakefile('contrib-destination');
@@ -252,7 +302,7 @@ class makeMakefileCase extends Drush_CommandTestCase {
     $this->drush('make', array($makefile, '.'), $config['options']);
 
     // Verify that the manually downloaded module still exists.
-    $this->assertFileExists(UNISH_SANDBOX . '/modules/cck_signup/README.txt');
+    $this->assertFileExists(UNISH_SANDBOX . '/sites/all/modules/contrib/cck_signup/README.txt');
   }
 
   function getMakefile($key) {

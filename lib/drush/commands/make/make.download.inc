@@ -30,6 +30,7 @@ function make_download_pm($name, $download, $download_location) {
     'destination' => dirname($download_location),
     'yes' => TRUE,
     'package-handler' => 'wget',
+    'source' => $download['status url'],
     // This is only relevant for profiles, but we always want the variant to
     // be 'profile-only' so we don't end up with extra copies of core.
     'variant' => 'profile-only',
@@ -188,6 +189,7 @@ function make_download_file_unpack($filename, $download_location, $name, $subtre
       $success = make_download_file_unpack_tar($filename, $download_location, $subtree);
       break;
 
+    case 'application/x-zip':
     case 'application/zip':
       $success = make_download_file_unpack_zip($filename, $download_location, $subtree);
       break;
@@ -259,7 +261,12 @@ function make_download_file_unpack_zip($filename, $download_location, $subtree =
 
   list($main_directory) = array_reverse(explode('/', $download_location));
 
-  drush_shell_exec("unzip %s -d %s", $filename, $tmp_path);
+  $result = drush_shell_exec("unzip %s -d %s", $filename, $tmp_path);
+
+  if (!$result) {
+    make_error('UNZIP_ERROR', dt('Unable to unzip @filename.', array('@filename' => $filename)));
+    return FALSE;
+  }
 
   return _make_download_file_move($tmp_path, $filename, $download_location, $subtree);
 }
@@ -383,7 +390,7 @@ function make_download_git($name, $download, $download_location) {
   // We want to use the most specific target possible, so first try a refspec.
   if (!empty($download['refspec'])) {
     if (drush_shell_exec("git fetch %s %s", $url, $download['refspec'])) {
-      drush_log(dt("Fetched refspec %refspec.", array('%refspec' => $download['refspec'])), 'ok');
+      drush_log(dt("Fetched refspec !refspec.", array('!refspec' => $download['refspec'])), 'ok');
 
       if (drush_shell_exec("git checkout FETCH_HEAD")) {
         drush_log(dt("Checked out FETCH_HEAD."), 'info');

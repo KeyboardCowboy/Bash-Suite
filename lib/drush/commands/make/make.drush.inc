@@ -105,14 +105,14 @@ function make_drush_command() {
   );
 
   // Add docs topic.
-  $make_dir = dirname(__FILE__);
+  $docs_dir = drush_get_context('DOC_PREFIX', DRUSH_BASE_PATH);
   $items['docs-make'] = array(
     'description' => 'Drush Make overview with examples',
     'hidden' => TRUE,
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($make_dir . '/README.txt'),
+    'callback arguments' => array($docs_dir . '/docs/make.txt'),
   );
   $items['docs-make-example'] = array(
     'description' => 'Drush Make example makefile',
@@ -120,7 +120,7 @@ function make_drush_command() {
     'topic' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH,
     'callback' => 'drush_print_file',
-    'callback arguments' => array($make_dir . '/EXAMPLE.make'),
+    'callback arguments' => array($docs_dir . '/examples/example.make'),
   );
   return $items;
 }
@@ -131,7 +131,7 @@ function make_drush_command() {
 function make_drush_help($section) {
   switch ($section) {
     case 'drush:make':
-      return 'Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see the README.txt included with drush make.';
+      return 'Turns a makefile into a Drupal codebase. For a full description of options and makefile syntax, see docs/make.txt and examples/example.make.';
     case 'drush:make-generate':
       return 'Generate a makefile from the current Drupal site, specifying project version numbers unless not known or otherwise specified. Unversioned projects will be interpreted later by drush make as "most recent stable release"';
   }
@@ -362,6 +362,7 @@ function make_projects($recursion, $contrib_destination, $info, $build_path) {
             'type' => 'pm',
             'full_version' => $release['version'],
             'download_link' => $release['download_link'],
+            'status url' => $request['status url'],
           );
         }
       }
@@ -509,7 +510,7 @@ function make_move_build($build_path) {
         // TODO: This only protects one level of directories from being removed.
         $files = drush_scan_directory($file->filename, '/./', array('.', '..'), 0, FALSE);
         foreach ($files as $file) {
-          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, TRUE);
+          $ret = $ret && drush_copy_dir($file->filename, $destination . DIRECTORY_SEPARATOR . $file->basename, FILE_EXISTS_MERGE);
         }
       }
       else {
@@ -563,7 +564,7 @@ function make_prepare_request($project, $type = 'contrib') {
  * @see make_projects()
  */
 function make_project_needs_release_info($project) {
-  return $project['location'] == RELEASE_INFO_DEFAULT_URL
+  return isset($project['location'])
     // Only fetch release info if the project type is unknown OR if
     // download attributes are unspecified.
     && (!isset($project['type']) || !isset($project['download']));

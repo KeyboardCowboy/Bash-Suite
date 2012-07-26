@@ -248,7 +248,10 @@ function pm_drush_command() {
       ),
       'use-site-dir' => 'Force to use the site specific directory. It will create the directory if it doesn\'t exist. If --destination is also present this option will be ignored.',
       'notes' => 'Show release notes after each project is downloaded.',
-      'variant' => "Only useful for install profiles. Possible values: 'full', 'projects', 'profile-only'.",
+      'variant' => array(
+        'description' => "Only useful for install profiles. Possible values: 'full', 'projects', 'profile-only'.",
+        'example-value' => 'full',
+      ),
       'select' => "Select the version to download interactively from a list of available releases.",
       'drupal-project-rename' => 'Alternate name for "drupal-x.y" directory when downloading Drupal project. Defaults to "drupal".',
       'default-major' => array(
@@ -339,13 +342,8 @@ function pm_pm_update_complete() {
  */
 function pm_complete_extensions() {
   if (drush_bootstrap_max(DRUSH_BOOTSTRAP_DRUPAL_FULL)) {
-    $extension_info = drush_get_extensions();
-    foreach ($extension_info as $key => $extension) {
-      if (!isset($extension->info['hidden'])) {
-        $extensions[] = $key;
-      }
-    }
-    return array('values' => $extensions);
+    $extension_info = drush_get_extensions(FALSE);
+    return array('values' => array_keys($extension_info));
   }
 }
 
@@ -511,11 +509,7 @@ function drush_get_projects(&$extensions = NULL) {
     // There's a special case, a project called "sites", this is the reason for
     // the second condition here.
     if ((in_array(basename($path), $reserved)) && (!in_array($name, $reserved))) {
-      $extension_list = array();
-      foreach ($extensions as $extension) {
-        $extension_list[] = $extension->name;
-      }
-      drush_log(dt('Error while trying to find the common path for enabled extensions of project !project. Extensions are: !extensions.', array('!project' => $name, '!extensions' => implode(', ', $extension_list))), 'error');
+      drush_log(dt('Error while trying to find the common path for enabled extensions of project !project. Extensions are: !extensions.', array('!project' => $name, '!extensions' => implode(', ', $project['extensions']))), 'error');
     }
     else {
       $projects[$name]['path'] = $path;
@@ -656,7 +650,7 @@ function drush_pm_list() {
   $header[] = dt('Version');
   $rows[] = $header;
 
-  $extension_info = drush_get_extensions();
+  $extension_info = drush_get_extensions(FALSE);
   uasort($extension_info, '_drush_pm_sort_extensions');
 
   $major_version = drush_drupal_major_version();
@@ -667,10 +661,6 @@ function drush_pm_list() {
     }
     $status = drush_get_extension_status($extension);
     if (!in_array($status, $status_filter)) {
-      unset($extension_info[$key]);
-      continue;
-    }
-    if (($major_version >= 6) and (isset($extension->info['hidden']))) {
       unset($extension_info[$key]);
       continue;
     }
@@ -913,7 +903,6 @@ function drush_pm_enable() {
   // Enable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_enable($modules);
-    drush_system_modules_form_submit(pm_module_list());
   }
 
   // Inform the user of final status.
@@ -1017,7 +1006,6 @@ function drush_pm_disable() {
   // Disable modules and pass dependency validation in form submit.
   if (!empty($modules)) {
     drush_module_disable($modules);
-    drush_system_modules_form_submit(pm_module_list());
   }
 
   // Inform the user of final status.

@@ -403,8 +403,6 @@ function drush_valid_db_credentials() {
   }
   $type = $creds['driver'];
 
-  $type = ( $type=='oracle' ? 'oci' : $type);
-
   switch (drush_drupal_major_version()) {
     case 6:
       // Check availability of db extension in PHP and also Drupal support.
@@ -468,6 +466,7 @@ function drush_valid_db_credentials() {
       break;
     case 7:
     default:
+      $type = ( $type=='oracle' ? 'oci' : $type); // fix PDO driver name, should go away in Drupal 8
       // Drupal >=7 requires PDO and drush requires php 5.2, that ships with PDO
       // but it may be compiled with --disable-pdo.
       if (!class_exists('PDO')) {
@@ -813,9 +812,9 @@ function drush_directory_cache($subdir = '') {
  * @return
  *   An array containing info for all available extensions.
  */
-function drush_get_extensions() {
+function drush_get_extensions($include_hidden = TRUE) {
   drush_include_engine('drupal', 'environment');
-  $extensions = array_merge(drush_get_modules(), drush_get_themes());
+  $extensions = array_merge(drush_get_modules($include_hidden), drush_get_themes($include_hidden));
   foreach ($extensions as $name => $extension) {
     $extensions[$name]->label = $extension->info['name'].' ('.$extension->name.')';
     if (empty($extension->info['package'])) {
