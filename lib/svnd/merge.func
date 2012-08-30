@@ -57,7 +57,7 @@ fi
 
 # If we are merging the trunk into a branch...
 if [ "$MERGER" == "trunk" ]; then
-  read -p "PRE Revision range (XXXX:YYYY): " RANGE
+  read -p "$PRE Revision range (XXXX:YYYY): " RANGE
   TRUNK=$(svn_get_url_trunk)
   echo "$PRE Merging $MERGER into $THISBRANCH..."
   svn merge $DRY -r$RANGE $TRUNK
