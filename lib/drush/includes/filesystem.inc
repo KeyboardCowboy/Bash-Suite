@@ -102,18 +102,20 @@ function drush_dir_md5($dir) {
 
 /**
  * Deletes the provided file or folder and everything inside it.
+ *
  * Usually respects read-only files and folders. To do a forced delete use
  * drush_delete_tmp_dir() or set the parameter $forced.
  *
  * @param $dir
- *   The directory to delete
+ *   The file or directory to delete.
  * @param $force
  *   Try whatever possible to delete the directory - also read-only ones.
  * @return
- *   FALSE on failure, TRUE if everything was deleted
+ *   FALSE on failure, TRUE if everything was deleted.
  */
 function drush_delete_dir($dir, $force = FALSE) {
-  if (!file_exists($dir)) {
+  // Allow to delete symlinks even if the target doesn't exist.
+  if (!is_link($dir) && !file_exists($dir)) {
     return TRUE;
   }
   if (!is_dir($dir)) {
@@ -221,12 +223,15 @@ function _drush_recursive_copy($src, $dest) {
     }
     closedir($dir_handle);
   }
+  elseif (is_link($src)) {
+    symlink(readlink($src), $dest);
+  }
   elseif (copy($src, $dest) !== TRUE) {
     return FALSE;
   }
 
   // Preserve execute permission.
-  if (!drush_is_windows()) {
+  if (!is_link($src) && !drush_is_windows()) {
     // Get execute bits of $src.
     $execperms = fileperms($src) & 0111;
     // Apply execute permissions if any.
@@ -313,6 +318,10 @@ function drush_mkdir($path, $required = TRUE) {
   if (!is_dir($path)) {
     if (drush_mkdir(dirname($path))) {
       if (@mkdir($path)) {
+        return TRUE;
+      }
+      elseif (is_dir($path) && is_writable($path)) {
+        // The directory was created by a concurrent process.
         return TRUE;
       }
       else {

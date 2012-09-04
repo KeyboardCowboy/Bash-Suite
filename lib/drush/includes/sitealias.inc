@@ -130,13 +130,12 @@ function drush_sitealias_valid_alias_format($alias) {
  * values in the specification.
  *
  * Site specifications come in several forms:
- *
- * 1.) /path/to/drupal#sitename
- * 2.) user@server/path/to/drupal#sitename
- * 3.) user@server/path/to/drupal            (sitename == server)
- * 4.) user@server#sitename                  (only if $option['r'] set in some drushrc file on server)
- * 5.) #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
- * 6.) sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
+ * - /path/to/drupal#sitename
+ * - user@server/path/to/drupal#sitename
+ * - user@server/path/to/drupal            (sitename == server)
+ * - user@server#sitename                  (only if $option['r'] set in some drushrc file on server)
+ * - #sitename                             (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
+ * - sitename                              (only if $option['r'] already set, and 'sitename' is a folder in $option['r']/sites)
  *
  * Note that in the case of the first four forms, it is also possible
  * to add additional site variable to the specification using uri query
@@ -1685,7 +1684,14 @@ function _drush_sitealias_preflight_path($path) {
   return array('alias' => $alias, 'path' => $path, 'machine' => $machine);
 }
 
-
+/**
+ * Given a properly-escaped options string, replace any occurance of
+ * %files and so on embedded inside it with its corresponding path.
+ */
+function drush_sitealias_evaluate_paths_in_options($option_string) {
+  $path_aliases = _core_path_aliases();
+  return str_replace(array_keys($path_aliases), array_values($path_aliases), $option_string);
+}
 
 /**
  * Evaluate a path from its shorthand form to a literal path

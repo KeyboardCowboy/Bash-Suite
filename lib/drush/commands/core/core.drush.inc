@@ -50,7 +50,7 @@ function core_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap.
     'options' => array(
       'pipe' => 'Print just the version number, and nothing else.',
-      'self-update' => 'Check for pending updates to Drush itself.',
+      'self-update' => 'Check for pending updates to Drush itself. Set to 0 to disable.',
     ),
   );
   $items['self-update'] = array(
@@ -73,8 +73,12 @@ function core_drush_command() {
     'arguments' => array(
       'filter' => 'A substring for filtering the list of files. Omit this argument to choose from loaded files.',
     ),
+    'options' => array(
+      'bg' => 'Run editor in the background. Does not work with editors such as `vi` that run in the terminal.',
+    ),
     'examples' => array(
       'drush core-config' => 'Pick from a list of config/alias/settings files. Open selected in editor.',
+      'drush --bg core-config' => 'Return to shell prompt as soon as the editor window opens.',
       'drush core-config etc' => 'Edit the global configuration file.',
       'drush core-config demo.alia' => 'Edit a particular alias file.',
       'drush core-config sett' => 'Edit settings.php for the current Drupal site.',
@@ -209,8 +213,14 @@ function core_drush_command() {
         'example-value' => 'mysql://root:pass@127.0.0.1/db',
         ),
       'db-prefix' => 'An optional table prefix to use for initial install.  Can be a key-value array of tables/prefixes in a drushrc file (not the command line).',
-      'db-su' => 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.',
-      'db-su-pw' => 'Password for the "db-su" account. Optional.',
+      'db-su' => array(
+        'description' => 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.',
+        'example-value' => 'root',
+      ),
+      'db-su-pw' => array(
+        'description' => 'Password for the "db-su" account. Optional.',
+        'example-value' => 'pass',
+      ),
       'account-name' => 'uid1 name. Defaults to admin',
       'account-pass' => 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drushrc.php.',
       'account-mail' => 'uid1 email. Defaults to admin@example.com',
@@ -416,15 +426,15 @@ function core_drush_help($section) {
       return dt("Return the filesystem path for modules/themes and other key folders.");
     case 'error:DRUSH_DRUPAL_DB_ERROR':
       $message = dt("Drush was not able to start (bootstrap) the Drupal database.\n");
-      $message .= dt("Hint: This error often occurs when Drush is trying to bootstrap a site that has not been installed or does not have a configured database.\n");
-      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
-      $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
+      $message .= dt("Hint: This may occur when Drush is trying to:\n");
+      $message .= dt(" * bootstrap a site that has not been installed or does not have a configured database. In this case you can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line. See `drush topic docs-aliases` for details.\n");
+      $message .= dt(" * connect the database through a socket. The socket file may be wrong or the php-cli may have no access to it in a jailed shell. See http://drupal.org/node/1428638 for details.\n");
+      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials()));
       return $message;
     case 'error:DRUSH_DRUPAL_BOOTSTRAP_ERROR':
       $message = dt("Drush was not able to start (bootstrap) Drupal.\n");
       $message .= dt("Hint: This error can only occur once the database connection has already been successfully initiated, therefore this error generally points to a site configuration issue, and not a problem connecting to the database.\n");
-      $message .= dt("\nDrush was attempting to connect to : \n!credentials\n", array('!credentials' => _core_site_credentials()));
-      $message .= dt("You can select another site with a working database setup by specifying the URI to use with the --uri parameter on the command line or \$options['uri'] in your drushrc.php file.\n");
+      $message .= dt("\nDrush was attempting to connect to: \n!credentials\n", array('!credentials' => _core_site_credentials()));
       return $message;
       break;
   }
@@ -612,6 +622,11 @@ function drush_core_cron() {
 function drush_core_config($filter = NULL) {
   $all = drush_core_config_load();
 
+  // Run in the foreground unless --bg is specified.
+  $bg = '';
+  if (drush_get_option('bg', FALSE)) {
+    $bg = '&';
+  }
   // Apply any filter that was supplied.
   if ($filter) {
     foreach ($all as $key => $file) {
@@ -623,12 +638,12 @@ function drush_core_config($filter = NULL) {
   $all = drush_map_assoc(array_values($all));
 
   if (count($all) == 1) {
-    return drush_shell_exec_interactive('$EDITOR %s &', current($all));
+    return drush_shell_exec_interactive('$EDITOR %s ' . $bg, current($all));
   }
   else {
     $choice = drush_choice($all, 'Enter a number to choose which file to edit.', '!key');
     if ($choice !== FALSE) {
-      return drush_shell_exec_interactive('$EDITOR %s &', $all[$choice]);
+      return drush_shell_exec_interactive('$EDITOR %s ' . $bg, $all[$choice]);
     }
   }
 }
@@ -694,6 +709,13 @@ function _drush_core_config_php_ini_files() {
  */
 function drush_core_requirements() {
   include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+  $severities = array(
+    REQUIREMENT_INFO => t('Info'),
+    REQUIREMENT_OK => t('OK'),
+    REQUIREMENT_WARNING => t('Warning'),
+    REQUIREMENT_ERROR => t('Error'),
+  );
+
   drupal_load_updates();
 
   $requirements = module_invoke_all('requirements', 'runtime');
@@ -703,16 +725,13 @@ function drush_core_requirements() {
   }
   ksort($requirements);
 
-  $min_severity = drush_get_option('severity', '-1');
-  // We don't label the "severity" column because it messes up the wrapping
-  $rows[] = array('Title', '', 'Description');
+  $min_severity = drush_get_option('severity', -1);
+  $rows[] = array('Title', 'Severity', 'Description');
   foreach($requirements as $key => $info) {
-    $severity = array_key_exists('severity', $info) ? $info['severity'] : '-1';
+    $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
     if ($severity >= $min_severity) {
       drush_print_pipe($key . ': ' . $severity . "\n");
-      if ($severity <= 0) {
-        $severity = 'OK';
-      }
+      $severity = $severities[$severity];
       $description = array_key_exists('value', $info) ? strip_tags($info['value']) : '';
       if (array_key_exists('description', $info) && !empty($info['description'])) {
         if (!empty($description)) {
@@ -724,7 +743,7 @@ function drush_core_requirements() {
     }
   }
   if (count($rows) > 1) {
-    drush_print_table($rows);
+    drush_print_table($rows, TRUE, array(1 => 8));
   }
   return $requirements;
 }

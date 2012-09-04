@@ -85,6 +85,9 @@ function make_prune_info_file($info, $include_only = array()) {
     $pruned = TRUE;
     foreach ($include_only as $type => $keys) {
 
+      if (!isset($info[$type])) {
+        continue;
+      }
       // For translating
       // dt("Projects");
       // dt("Libraries");
@@ -252,6 +255,10 @@ function make_validate_info_file($info) {
       }
     }
   }
+
+  // Apply defaults after projects[] array has been expanded, but prior to
+  // external validation.
+  make_apply_defaults($info);
 
   foreach (drush_command_implements('make_validate_info') as $module) {
     $function = $module . '_make_validate_info';
@@ -488,6 +495,30 @@ if (!function_exists('sys_get_temp_dir')) {
       }
       else {
         return FALSE;
+      }
+    }
+  }
+}
+
+/**
+ * Apply any defaults.
+ *
+ * @param array &$info
+ *   A parsed make array.
+ */
+function make_apply_defaults(&$info) {
+  if (isset($info['defaults'])) {
+    $defaults = $info['defaults'];
+    unset($info['defaults']);
+
+    foreach ($defaults as $type => $default_data) {
+      if (isset($info[$type])) {
+        foreach ($info[$type] as $project => $data) {
+          $info[$type][$project] += $default_data;
+        }
+      }
+      else {
+        drush_log(dt("Unknown attribute '@type' in defaults array", array('@type' => $type)), 'warning');
       }
     }
   }
