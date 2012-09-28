@@ -263,6 +263,10 @@ function svn_get_current_branch() {
 # Get the URL of the directory in the repository
 ##
 function svn_get_url() {
+  if [ ! -d .svn ];then
+    exit 1
+  fi
+  
   URL=`svn info --xml | fgrep "<url>"`
 
   # Strip the tags
@@ -363,6 +367,7 @@ function svn_select_tag_version() {
 function get_normal_url() {
   SUBDIR=$1
   URL=$(svn_get_url)
+  DIR=''
 
   if [[ "$URL" == */trunk$SUBDIR ]]; then
     DIR=${URL//\/trunk*/}
@@ -377,13 +382,54 @@ function get_normal_url() {
   echo $DIR
 }
 
+##
+# Get the SVN project name and branch.
+##
+function svn_project_name() {
+  local URL=$(get_normal_url)
+  if [ -n "$URL" ]; then
+    echo "$(basename $(dirname $URL)) ($(svn_get_current_branch))"
+  fi
+}
+
 ################################################################################
 # GIT Tools
 ################################################################################
+##
+# Are we in a git project?
+##
+function is_git {
+  echo $(git_get_current_branch) || null
+}
+
 ##
 # Get the current GIT branch
 ##
 function git_get_current_branch() {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || return
   echo ${ref#refs/heads/}
+}
+
+##
+# Get the project name from custom config keys.
+##
+function git_project_name {
+  if [ $(is_git) ]; then
+    local PROJ=`git config --get-all project.name`
+    
+    if [ -n "$PROJ" ]; then
+      echo "$PROJ ($(git_get_current_branch))"
+    else
+      echo "No project name. (git config project.name 'Project Name')"
+    fi
+  fi
+}
+
+##
+# Get the root directory of this GIT project.
+##
+function git_root_dir {
+  if [ $(is_git) ]; then
+    echo $(git rev-parse --show-toplevel)
+  fi
 }
