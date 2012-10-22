@@ -2,6 +2,8 @@
 # Download a tarball from a Git tag
 ##
 
+PRE="GitGet"
+
 # Ask for the category
 read -p "Category: " CAT
 
@@ -18,6 +20,13 @@ mkdir $REPO
 cd $REPO
 
 # Export and extract the tag
+echo "$PRE: Extracting $REPO-$TAG..."
 git archive --format=tar $TAG --remote=$LOC | gzip > $REPO-$TAG.tar.gz
+
+echo "$PRE: Unzipping $REPO-$TAG into `pwd`/$REPO..."
 tar -zxf $REPO-$TAG.tar.gz
+
+echo "$PRE: Removing tarball..."
 rm $REPO-$TAG.tar.gz
+
+echo "$PRE: Complete."
