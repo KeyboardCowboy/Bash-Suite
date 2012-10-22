@@ -1,0 +1,23 @@
+##
+# Download a tarball from a Git tag
+##
+
+# Ask for the category
+read -p "Category: " CAT
+
+# Ask for the repo name
+read -p "Repo Name (without .git): " REPO
+
+# Ask for the tag name
+read -p "Tag: " TAG
+
+LOC="git@commdev2.nrel.gov:$CAT/$REPO.git"
+
+# Create the directory and export the tag
+mkdir $REPO
+cd $REPO
+
+# Export and extract the tag
+git archive --format=tar $TAG --remote=$LOC | gzip > $REPO-$TAG.tar.gz
+tar -zxf $REPO-$TAG.tar.gz
+rm $REPO-$TAG.tar.gz
