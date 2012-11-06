@@ -1,4 +1,4 @@
 
-print_error "Oops! I did it again."
-print_success "Oops! I did it again."
-print_warning "Oops! I did it again."
+GIT=$(git_get_current_branch)
+
+print_success $(parse_branch)
