@@ -87,4 +87,9 @@ sudo find $FULLDIR -type d \( -path "*/sites/*/files" -or -path "*/sites/*/priva
 echo "Setting conifguration files..."
 sudo find $FULLDIR -name 'settings.php' -exec sudo chmod 640 {} \; -exec sudo chown $USER:$GROUP {} \;
 
+# If the FULLDIR root is the webroot for the site, set the owner to apache
+if [ -f $FULLDIR/index.* ]; then
+  sudo chown $APACHE $FULLDIR
+fi
+
 echo "Web permissions set."
