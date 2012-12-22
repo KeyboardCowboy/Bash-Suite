@@ -15,14 +15,27 @@ function valid_user {
   fi
 }
 
-# Get directory
+# Dev or Prod
 if [ -n "$1" ]; then
-  FULLDIR=`pwd`/$1
+  DENV=$1
 else
-  FULLDIR=`pwd`
+  read -p "Choose a permission level: [dev|prod]? " DENV
+fi
+
+# Define modes based on perm level
+if [ "$DENV" == "dev" ]; then
+  MOD_DIR="775"
+  MOD_FILE="775"
+elif [ "$DENV" == "prod" ]; then
+  MOD_DIR="750"
+  MOD_FILE="540"
+else
+  echo "Invalid permission type chosen."
+  exit 1
 fi
 
 # Gather necessary vars
+FULLDIR=`pwd`
 APACHE=$APACHE_USER
 GROUP=$APACHE_GROUP
 USER=$DEFAULT_SITE_ADMIN
@@ -69,11 +82,11 @@ echo "Setting web permissions on $FULLDIR"
 
 # Set all directories except for GIT and SVN
 echo "Setting all directories..."
-sudo find $FULLDIR -type d \! \( -path '*/.*' -or \( -perm 750 -user $USER -group $GROUP \) \) -exec sudo chmod 750 {} \; -exec sudo chown $USER:$GROUP {} \;
+sudo find $FULLDIR -type d \! \( -path '*/.*' -or \( -perm $MOD_DIR -user $USER -group $GROUP \) \) -exec sudo chmod $MOD_DIR {} \; -exec sudo chown $USER:$GROUP {} \;
 
 # Make all files read only
 echo "Setting all files..."
-sudo find $FULLDIR -type f \! \( -path '*/.*' -or \( -perm 540 -user $USER -group $GROUP \) \) -exec sudo chmod 540 {} \; -exec sudo chown $USER:$GROUP {} \;
+sudo find $FULLDIR -type f \! \( -path '*/.*' -or \( -perm $MOD_FILE -user $USER -group $GROUP \) \) -exec sudo chmod $MOD_FILE {} \; -exec sudo chown $USER:$GROUP {} \;
 
 # Set VCS and dot files
 #echo "Setting all VCS..."

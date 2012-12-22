@@ -15,7 +15,24 @@ read -p "Tag: " TAG
 
 LOC="git@commdev2.nrel.gov:$CAT/$REPO.git"
 
-# Create the directory and export the tag
+# Check for an existing directory
+if [ -d $REPO ]; then
+  read -p "The directory '$REPO' already exists.  Would you like to replace it (y/n)? " REPLACE
+  if [ "$REPLACE" != "y" ]; then
+    echo "$PRE Cancelling..."
+    exit 1
+  else
+    # Handle SVN Repos
+    if [ -d ".svn" ]; then
+      svn rm --force $REPO
+      svn ci -m "Replacing '$REPO'"
+    else
+      sudo rm -rf $REPO
+    fi
+  fi
+fi
+
+# Create the directory
 mkdir $REPO
 cd $REPO
 
@@ -23,10 +40,15 @@ cd $REPO
 echo "$PRE: Extracting $REPO-$TAG..."
 git archive --format=tar $TAG --remote=$LOC | gzip > $REPO-$TAG.tar.gz
 
-echo "$PRE: Unzipping $REPO-$TAG into `pwd`/$REPO..."
+echo "$PRE: Unzipping $REPO-$TAG into `pwd`"
 tar -zxf $REPO-$TAG.tar.gz
 
 echo "$PRE: Removing tarball..."
 rm $REPO-$TAG.tar.gz
+
+# Re-add the project to the repo
+if [ -d ".svn" ]; then
+  svn add $REPO
+fi
 
 echo "$PRE: Complete."
