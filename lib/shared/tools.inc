@@ -266,7 +266,7 @@ function svn_get_url() {
   if [ ! -d .svn ];then
     exit 1
   fi
-  
+
   URL=`svn info --xml | fgrep "<url>"`
 
   # Strip the tags
@@ -416,9 +416,9 @@ function git_get_current_branch() {
 function git_project_name {
   if [ $(is_git) ]; then
     local PROJ=`git config --get-all project.name`
-    
+
     if [ -n "$PROJ" ]; then
-      echo "$PROJ ($(git_get_current_branch))"
+      echo "$PROJ"
     else
       echo "No project name. (git config project.name 'Project Name')"
     fi
