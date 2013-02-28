@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Pull a git tag from the repo and create a tar ball.
+
+# Ask for the repo and Tag
+read -p "Repository: " REPO
+read -p "Tag: " TAG
+read -p "FileName: " NAME
+
+git archive --format=tar $TAG --remote=$REPO | gzip > $NAME-$TAG.tar.gz
+
+echo "Tag $TAG archived to $NAME-$TAG.tar.gz"
