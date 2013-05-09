@@ -2,53 +2,42 @@
 # Download a tarball from a Git tag
 ##
 
-PRE="GitGet"
+PRE="GITGET"
+DIR=$1
+TAG=$2
 
-# Ask for the category
-read -p "Category: " CAT
-
-# Ask for the repo name
-read -p "Repo Name (without .git): " REPO
-
-# Ask for the tag name
-read -p "Tag: " TAG
-
-LOC="git@commdev2.nrel.gov:$CAT/$REPO.git"
+while [ -z "$DIR" ]; do
+  read -p "$PRE: Project Name: " DIR
+done
+while [ -z "$TAG" ]; do
+  read -p "$PRE: Tarball: " TAG
+done
 
 # Check for an existing directory
-if [ -d $REPO ]; then
-  read -p "The directory '$REPO' already exists.  Would you like to replace it (y/n)? " REPLACE
+if [ -d $DIR ]; then
+  read -p "The project '$DIR' already exists.  Would you like to replace it (y/n)? " REPLACE
   if [ "$REPLACE" != "y" ]; then
-    echo "$PRE Cancelling..."
+    echo "$PRE: Cancelling..."
     exit 1
   else
-    # Handle SVN Repos
-    if [ -d ".svn" ]; then
-      svn rm --force $REPO
-      svn ci -m "Replacing '$REPO'"
-    else
-      sudo rm -rf $REPO
-    fi
+    rm -rf $DIR
   fi
 fi
 
-# Create the directory
-mkdir $REPO
-cd $REPO
+# Download the tag
+echo "$PRE: Acquiring tag..."
+wget -q --no-check-certificate $TAG -O gitGet.tmp
 
-# Export and extract the tag
-echo "$PRE: Extracting $REPO-$TAG..."
-git archive --format=tar $TAG --remote=$LOC | gzip > $REPO-$TAG.tar.gz
+# Unzip the tag
+echo "$PRE: Extracting contents..."
+#mkdir $DIR
+tar -zxf gitGet.tmp
 
-echo "$PRE: Unzipping $REPO-$TAG into `pwd`"
-tar -zxf $REPO-$TAG.tar.gz
+# How do I rename a file whose name I don't know?
+mv $DIR-* $DIR
 
-echo "$PRE: Removing tarball..."
-rm $REPO-$TAG.tar.gz
-
-# Re-add the project to the repo
-if [ -d ".svn" ]; then
-  svn add $REPO
-fi
+# Cleanup the tar file
+echo "$PRE: Cleaning up..."
+rm gitGet.tmp
 
 echo "$PRE: Complete."
