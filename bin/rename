@@ -1,0 +1,21 @@
+#!/bin/bash
+# File: rename
+# Created: 2013-May-10 12:59:43
+# Author: Chris Albrecht
+#
+# Mass renaming of files.
+
+if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]]; then
+  echo "Usage: rename \"<range>\" <from> <to>"
+  exit 1
+fi
+
+IFS=' ' read -a FILES <<< "$1"
+FROM=$2
+TO=$3
+
+for RANGE in "${FILES[@]}"
+do
+  ls $RANGE | awk '{print("mv "$1" "$1)}' | sed 's/'$FROM'/'$TO'/2' | /bin/sh
+done
+
