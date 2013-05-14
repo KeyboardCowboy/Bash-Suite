@@ -1,2 +1,3 @@
 #!/bin/bash
-echo -e "${BRIGHT_WHITE}------------------------------------${NORMAL}"
+source ~/.bash_config/global/colors.inc
+echo -e "$(color WHITE BRIGHT)------------------------------------$(color RESET)"

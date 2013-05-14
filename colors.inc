@@ -1,60 +1,61 @@
-#!/bin/bash
-export DULL=0
-export BRIGHT=1
-
-export FG_BLACK=30
-export FG_RED=31
-export FG_GREEN=32
-export FG_YELLOW=33
-export FG_BLUE=34
-export FG_VIOLET=35
-export FG_CYAN=36
-export FG_WHITE=37
-
-export FG_NULL=00
-
-export BG_BLACK=40
-export BG_RED=41
-export BG_GREEN=42
-export BG_YELLOW=43
-export BG_BLUE=44
-export BG_VIOLET=45
-export BG_CYAN=46
-export BG_WHITE=47
-
-export BG_NULL=00
-
 ##
-# ANSI Escape Commands
+# Color Builder
+#
+# @param $color
+#   BLACK | RED | GREEN | YELLOW | BLUE | VIOLET | CYAN | WHITE
+#
+# @param $luminosity
+#   BRIGHT | DULL (default)
+#
+# @param $ground
+#   BG | FG (default)
 ##
-export ESC="\033"
-export NORMAL="$ESC[m"
-export RESET="$ESC[${DULL};${FG_WHITE};${BG_NULL}m"
+function color {
+  # Define colors and luminosity
+  local DULL=0
+  local BRIGHT=1
 
-##
-# Shortcuts for Colored Text ( Bright and FG Only )
-##
+  local FG_BLACK=30
+  local FG_RED=31
+  local FG_GREEN=32
+  local FG_YELLOW=33
+  local FG_BLUE=34
+  local FG_VIOLET=35
+  local FG_CYAN=36
+  local FG_WHITE=37
 
-# DULL TEXT
-export BLACK="$ESC[${DULL};${FG_BLACK}m"
-export RED="$ESC[${DULL};${FG_RED}m"
-export GREEN="$ESC[${DULL};${FG_GREEN}m"
-export YELLOW="$ESC[${DULL};${FG_YELLOW}m"
-export BLUE="$ESC[${DULL};${FG_BLUE}m"
-export VIOLET="$ESC[${DULL};${FG_VIOLET}m"
-export CYAN="$ESC[${DULL};${FG_CYAN}m"
-export WHITE="$ESC[${DULL};${FG_WHITE}m"
+  local BG_BLACK=40
+  local BG_RED=41
+  local BG_GREEN=42
+  local BG_YELLOW=43
+  local BG_BLUE=44
+  local BG_VIOLET=45
+  local BG_CYAN=46
+  local BG_WHITE=47
 
-# BRIGHT TEXT
-export BRIGHT_BLACK="$ESC[${BRIGHT};${FG_BLACK}m"
-export BRIGHT_RED="$ESC[${BRIGHT};${FG_RED}m"
-export BRIGHT_GREEN="$ESC[${BRIGHT};${FG_GREEN}m"
-export BRIGHT_YELLOW="$ESC[${BRIGHT};${FG_YELLOW}m"
-export BRIGHT_BLUE="$ESC[${BRIGHT};${FG_BLUE}m"
-export BRIGHT_VIOLET="$ESC[${BRIGHT};${FG_VIOLET}m"
-export BRIGHT_CYAN="$ESC[${BRIGHT};${FG_CYAN}m"
-export BRIGHT_WHITE="$ESC[${BRIGHT};${FG_WHITE}m"
+  local FG_NULL=00
+  local BG_NULL=00
 
-# REV TEXT as an example
-export REV_CYAN="$ESC[${DULL};${BG_WHITE};${BG_CYAN}m"
-export REV_RED="$ESC[${DULL};${FG_YELLOW}; ${BG_RED}m"
+  local ESC="\033"
+  local RESET="$ESC[${DULL};${FG_WHITE};${FG_NULL}m"
+
+  # Handle Special Cases
+  if [[ "$1" == 'RESET' ]]; then
+    echo ${RESET}
+    exit 1
+  fi
+
+  # Set the luminosity, ground and color
+  LUMIN=$2
+  if [[ "$LUMIN" != "BRIGHT" ]]; then
+    LUMIN="DULL"
+  fi
+  GROUND=$3
+  if [[ "$GROUND" != "BG" ]]; then
+    GROUND="FG"
+  fi
+
+  local COLOR="${GROUND}_${1}"
+
+  echo "$ESC[${!LUMIN};${!COLOR}m"
+}
