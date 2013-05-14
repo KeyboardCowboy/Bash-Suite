@@ -61,8 +61,11 @@ function color {
 }
 
 ## Create basic colors
-export CYAN=$(color CYAN)
-export WHITE=$(color WHITE BRIGHT)
+export RED=$(color RED)
 export GREEN=$(color GREEN)
 export YELLOW=$(color YELLOW)
+export BLUE=$(color BLUE)
+export VIOLET=$(color VIOLET)
+export CYAN=$(color CYAN)
+export WHITE=$(color WHITE BRIGHT)
 export RESET=$(color RESET)
