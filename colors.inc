@@ -59,3 +59,10 @@ function color {
 
   echo "$ESC[${!LUMIN};${!COLOR}m"
 }
+
+## Create basic colors
+export CYAN=$(color CYAN)
+export WHITE=$(color WHITE BRIGHT)
+export GREEN=$(color GREEN)
+export YELLOW=$(color YELLOW)
+export RESET=$(color RESET)
