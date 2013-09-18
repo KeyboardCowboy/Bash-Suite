@@ -24,20 +24,29 @@ if [ -d $DIR ]; then
   fi
 fi
 
+# Create the isolation directory
+if [ -d ".ggtmp" ]; then
+  rm -rf .ggtmp/*
+else
+  mkdir .ggtmp
+fi
+
 # Download the tag
 echo "$PRE: Acquiring tag..."
-wget -q --no-check-certificate $TAG -O gitGet.tmp
+wget -q --no-check-certificate $TAG -O .ggtmp/gitGet.tmp
 
 # Unzip the tag
 echo "$PRE: Extracting contents..."
-#mkdir $DIR
+cd .ggtmp
 tar -zxf gitGet.tmp
+rm -f gitGet.tmp
 
-# How do I rename a file whose name I don't know?
-mv $DIR-* $DIR
+# How do I rename a file whose name I don't know?  Isolate it in a new folder.
+cd ..
+mv .ggtmp/* $DIR
 
 # Cleanup the tar file
 echo "$PRE: Cleaning up..."
-rm gitGet.tmp
+rm -rf .ggtmp
 
 echo "$PRE: Complete."
