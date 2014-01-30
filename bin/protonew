@@ -1,0 +1,10 @@
+#!/bin/bash
+# File: protonew
+# Created: 2014-Jan-30 11:25:40
+# Author: Chris Albrecht
+#
+# Dependencies: gitget
+#
+# Create a new Prototyping base site.
+
+gitget $1 https://github.com/KeyboardCowboy/site-base/archive/master.zip
