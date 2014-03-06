@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# File: Declutter
+# Author: Chris Albrecht (chris AT 162unlimited DOT com)
+# Updated: 31-Dec-2013 14:20:31
+#
+# Provides statistics about common places on your Mac that may be hoarding disk
+# space unnecessarily.
+#
+# WARNING: ADVANCED USERS ONLY!
+# Removing the files in these locations should be done with extreme caution as
+# they may be required to run certain applications.  Do not remove files from
+# these directories unless you are SURE you know what you are doing.
+#
+# Level 1: Safe to delete
+# Level 2: May have some side effects
+# Level 3: Definitely has side effects. Last resort only!
+
+source ~/.bash_config/global/colors.inc
+
+CHECK="sudo du -sh"
+
+echo -e "${GREEN}Scanning directories...${RESET}";
+
+# Check the Sleep Image
+$CHECK /private/var/vm
+
+# Check System Logs
+$CHECK /private/var/log
+
+# Check QuickLook Caches
+$CHECK /private/var/folders
+
+# Check temp files
+$CHECK /private/var/tmp
+
+# Check cached data
+$CHECK ~/Library/Caches
+
+# Check the trash
+$CHECK ~/.Trash
+
+# Check the Downloads folder
+$CHECK ~/Downloads
