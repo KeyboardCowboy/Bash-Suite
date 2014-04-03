@@ -34,6 +34,12 @@ $CHECK /private/var/folders
 # Check temp files
 $CHECK /private/var/tmp
 
+# Check database dumps
+$CHECK /var/www/db
+
+# Check actual databases
+$CHECK /Applications/MAMP/db/mysql
+
 # Check cached data
 $CHECK ~/Library/Caches
 
