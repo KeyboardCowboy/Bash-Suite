@@ -24,5 +24,3 @@ for f in ~/.bash_config/local/*.cfg; do
     source $f
   fi
 done
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
