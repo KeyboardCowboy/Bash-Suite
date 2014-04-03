@@ -68,16 +68,5 @@ if [ ! -f $HD/vars.inc ] && [ -f $HD/global/_vars.inc ]; then
   cp $HD/global/_vars.inc $HD/vars.inc
 fi
 
-#
-# If drush is present, create the symlink for that
-#
-if [ -d $HD/global/lib/drush ]; then
-  echo "$PRE Drush found.  Installing Drush binary."
-  if [ -h $HD/local/bin/drush ] || [ -f $HD/local/bin/drush ]; then
-    rm $HD/local/bin/drush
-  fi
-  ln -s $HD/global/lib/drush/drush $HD/local/bin/drush
-fi
-
 # Open the vars file
 vi ~/.bash_config/vars.inc
