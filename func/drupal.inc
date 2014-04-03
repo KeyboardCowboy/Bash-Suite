@@ -3,10 +3,6 @@
 # drupal.cfg
 # DRUPAL SPECIFIC SETTINGS AND FUNCTIONS
 
-# Aliases
-alias settings="cp sites/default/default.settings.php sites/default/settings.php"
-alias devcheck="grep 'kpr' .;grep 'dpm' .;grep 'console.log' .;"
-
 ##
 # Open a changelog for editing.
 ##

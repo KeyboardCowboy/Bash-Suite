@@ -5,13 +5,6 @@
 
 ME=`whoami`
 
-# Aliases
-alias kopen="open -a 'Komodo Edit'"
-alias kotools="cd /Users/$ME/Library/Application\ Support/KomodoEdit/8.5/tools"
-
-alias showAllFiles="defaults write com.apple.Finder AppleShowAllFiles YES;killall Finder;"
-alias hideSystemFiles="defaults write com.apple.Finder AppleShowAllFiles NO;killall Finder;"
-
 # Copy something to the clipboard
 function copy() {
   echo "$1" | pbcopy

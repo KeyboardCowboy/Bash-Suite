@@ -4,15 +4,6 @@
 #
 # DRUSH SPECIFIC SETTINGS AND FUNCTIONS
 
-# Aliases
-alias drsuh="drush"
-alias d="drush -y"
-#alias du="drush -y pm-uninstall"
-alias dsc="drush dslm-switch-core"
-alias cc="drush cc all"
-alias themeon="drush -y en devel_themer"
-alias themeoff="drush -y dis devel_themer"
-
 # Add my core modules to a drupal installation
 function dpac() {
   for PACK in "$@"; do

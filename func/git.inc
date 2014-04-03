@@ -1,17 +1,7 @@
-#!/bin/bash
-#
-# Git specific commands
+# Git specific functions
 
-alias ga="git add"
-alias gc="git commit"
-alias gd="git diff"
-alias gl="git log"
-alias gr="git remote -v"
-alias gs="git status"
-alias nomode="git config core.filemode false; git config --global core.filemode false"
-alias gitname="git config project.name"
-
-source ~/.bash_config/global/lib/shared/tools.inc
+# Git Autocomplete
+source ~/.bash_config/global/lib/.git-completion.bash
 
 ##
 # Shortcut to push the current branch of a git repo.

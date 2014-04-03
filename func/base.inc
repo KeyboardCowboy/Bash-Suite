@@ -1,10 +1,7 @@
 #!/bin/bash
 #
 # base.cfg
-# SYSTEM LEVEL CONFIGURATIONS, SETTINGS AND FUNCTIONS
-
-# Load our standard toolset.
-source ~/.bash_config/global/lib/shared/tools.inc
+# SYSTEM LEVEL FUNCTIONS
 
 ##
 # Parse the GIT and SVN branches we may be on
@@ -30,37 +27,11 @@ function parse_branch {
   fi
 }
 
-# Console settings
-export PS1="\[${SYSCOLOR}\][\u\[${WHITE}\]@\[${SYSCOLOR}\]${TITLE}\[${WHITE}\]\[\$(parse_branch)\]\[${WHITE}\]: \W\[${SYSCOLOR}\]]\[${RESET}\]"$'\xe2\x86\x92 $(set_title)'
-export PROMPT_COMMAND='export ERR=$?'
-
-# Git Autocomplete
-if [ -f ~/.bash_config/global/lib/.git-completion.bash ]; then
-  . ~/.bash_config/global/lib/.git-completion.bash
-fi
 
 # Add the project name to the console title
 function set_title {
   title $(git_project_name) || ''
 }
-
-#export PS1=$'\\[\e[31m\\]\xe2\x88\xb4\\[\e[0m\\]\n\xe2\x86\x92 \xe2\x98\xbf \\~ \\[\e[31m\\]\xe2\x98\x85 $? \\[\e[0m\\]'
-
-# Aliases
-alias b="cd -"
-alias conf="cd /var/www/conf"
-alias e='edit';
-alias flushcache='dscacheutil -flushcache'
-alias grep='grep --exclude=*svn* -rn'
-alias sb="source ~/.bash_profile"
-alias ping='ping -c 5'
-alias p="cd ..; l"
-alias l='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahl;echo -e "${SYSCOLOR}"`pwd`"${RESET}";decho;'
-alias web="cd $WEBROOT"
-alias cp="cp -r"
-alias mkdir="mkdir -p"
-alias wget="wget --no-check-certificate"
-alias howbigis="sudo du -sh"
 
 # Edit a configuration file or open the bash profile
 function bp() {
@@ -193,6 +164,3 @@ function title() {
     echo -en "\033]1;$TITLE\007"
   fi
 }
-
-# Set the title
-title
