@@ -48,6 +48,18 @@ function dpac() {
 # Quick directory change for drush
 function cdd {
   # Derrive the path
+  GO=$(_dd $1 $2);
+
+  # Make sure we have a legit path before we try to change dir.
+  if [ -n "$GO" ] && [ -d $GO ]; then
+    cd $GO
+  fi
+}
+
+# Helper function to resolve a directory using drush.
+function _dd {
+  GO='';
+
   if [ -z $1 ]; then
     GO=`drush dd`
   elif [ -n $1 ] && [ -z $2 ] && [ ${1:0:1} != "@" ]; then
@@ -58,10 +70,7 @@ function cdd {
     GO=`drush $1 dd $2`
   fi
 
-  # Make sure we have a legit path before we try to change dir.
-  if [ -n "$GO" ] && [ -d $GO ]; then
-    cd $GO
-  fi
+  echo $GO;
 }
 
 # Drush enhanced development environment configuration
@@ -123,21 +132,15 @@ function drm() {
 }
 
 # Open a module or theme in a finder window
-function dopen() {
-    open `drush dd $1`
+function dopen {
+  DIR=$(_dd $1 $2);
+  open $DIR;
 }
 
-# Adjust site settings for IE or not IE.
-function ie() {
-    if [ "$1" == "on" ]; then
-        drush -y vset preprocess_css 1
-        drush -y vset preprocess_js 1
-        echo "Site configured for IE testing."
-    else
-        drush -y vset preprocess_css 0
-        drush -y vset preprocess_js 0
-        echo "Site configured for non-IE testing."
-    fi
+# Use drush to specify a directory to open with Atom.
+function datom {
+  DIR=$(_dd $1 $2);
+  atom $DIR;
 }
 
 # Create a new Drupal 7 site with default credentials.
