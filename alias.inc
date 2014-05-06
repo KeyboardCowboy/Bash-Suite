@@ -21,10 +21,11 @@ alias hideSystemFiles="defaults write com.apple.Finder AppleShowAllFiles NO;kill
 alias howbigis="sudo du -sh"
 alias j="jekyll"
 alias kopen="open -a 'Komodo Edit'"
-alias kotools="cd /Users/$ME/Library/Application\ Support/KomodoEdit/8.5/tools"
+alias kotools="cd ~/Library/Application\ Support/KomodoEdit/8.5/tools"
 alias l='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahl;echo -e "${SYSCOLOR}"`pwd`"${RESET}";decho;'
 alias logs='cd /Applications/MAMP/logs'
 alias mkdir="mkdir -p"
+alias matrix='LC_ALL=C tr -c "[:digit:]" " " < /dev/urandom | dd cbs=$COLUMNS conv=unblock | GREP_COLOR="1;32" grep --color "[^ ]"'
 alias nomode="git config core.filemode false"
 alias p="cd ..; l"
 alias ping='ping -c 5'
