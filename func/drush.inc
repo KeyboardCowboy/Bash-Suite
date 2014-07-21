@@ -106,8 +106,6 @@ function di () {
     MOD=$1
     drush dl $MOD
     drush en -y $MOD
-    echo "Project directory includes:"
-    find `drush dd $MOD` -name "*.module" -print
 }
 
 # Drush reinstallation procedure.
