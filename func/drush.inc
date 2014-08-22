@@ -62,10 +62,10 @@ function _dd {
 
   if [ -z $1 ]; then
     GO=`drush dd`
-  elif [ -n $1 ] && [ -z $2 ] && [ ${1:0:1} != "@" ]; then
+  elif [ -n $1 ] && [ -z $2 ]; then
     GO=`drush dd $1`
-  elif [ -n $1 ] && [ -z $2 ] && [ ${1:0:1} == "@" ]; then
-    GO=`drush $1 dd`
+  #elif [ -n $1 ] && [ -z $2 ] && [ ${1:0:1} == "@" ]; then
+    #GO=`drush $1 dd`
   elif [ -n $1 ] && [ -n $2 ] && [ ${1:0:1} == "@" ]; then
     GO=`drush $1 dd $2`
   fi

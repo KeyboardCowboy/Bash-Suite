@@ -21,7 +21,7 @@ function gp {
   # Iterate through the array, pushing to each remote
   for R in $REMOTES; do
     echo -e "${GREEN}Pushing $BRANCH to $R...${RESET}"
-    git push $R $BRANCH
+    git push -u $R $BRANCH
   done
 }
 
