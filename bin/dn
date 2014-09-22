@@ -1,0 +1,10 @@
+#!/bin/bash
+# File: dn
+# Created: 2014-Sep-22 11:20:27
+# Author: Chris Albrecht
+#
+# Shortcut for Growl Notify with Drush
+
+MSG=$1
+
+growlnotify -t Drush -m $MSG
