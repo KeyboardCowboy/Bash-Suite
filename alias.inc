@@ -1,5 +1,9 @@
 # ALIASES
 alias b="cd -"
+alias bcw='bundle exec compass watch'
+alias bcc='bundle exec compass compile'
+alias bi='bundle install'
+alias bu='bundle update'
 alias cc="drush cc all"
 alias conf="cd /var/www/conf"
 alias cp="cp -r"

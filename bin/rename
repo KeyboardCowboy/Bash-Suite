@@ -3,19 +3,21 @@
 # Created: 2013-May-10 12:59:43
 # Author: Chris Albrecht
 #
-# Mass renaming of files.
+# Bulk renaming of files.
 
-if [[ -z "$1" ]] || [[ -z "$2" ]] || [[ -z "$3" ]]; then
-  echo "Usage: rename \"<range>\" <from> <to>"
+if [[ -z "$1" ]] || [[ -z "$2" ]]; then
+  echo "Usage: rename <from> <to> [\"<mask>\"] "
   exit 1
 fi
 
-IFS=' ' read -a FILES <<< "$1"
-FROM=$2
-TO=$3
+# If no mask is set, get all files in the current dir.
+[[ -n "$3" ]] && MASK="$3" || MASK="*";
+
+IFS=' ' read -a FILES <<< "$MASK"
+FROM=$1
+TO=$2
 
 for RANGE in "${FILES[@]}"
 do
-  ls $RANGE | awk '{print("mv "$1" "$1)}' | sed 's/'$FROM'/'$TO'/2' | /bin/sh
+  ls $RANGE | awk '{print("mv "$MASK" "$MASK)}' | sed 's/'$FROM'/'$TO'/2' | /bin/sh
 done
-

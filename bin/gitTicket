@@ -1,0 +1,24 @@
+#!/bin/bash
+# File: gitTicket
+# Created: 2014-Oct-20 12:45:42
+# Author: KeyboardCowboy
+#
+# Create a new branch with proper ticket naming convention.
+
+NUM="$1"
+DESC="$2"
+NAME=`git config user.name`
+
+BRANCH="$NAME-$NUM-$DESC"
+
+# Pull in the latest changes
+git pull
+
+# Create the branch
+git checkout -b "$BRANCH"
+
+# Add the ticket tracking description.
+git config branch.$(echo $BRANCH).description "Branch for ticket [#$NUM]"
+
+# Display the branch description
+git config branch.$(echo $BRANCH).description

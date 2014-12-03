@@ -7,4 +7,4 @@
 
 MSG=$1
 
-growlnotify -t Drush -m $MSG
+growlnotify --image="/Users/Chris/Dropbox (Personal)/Web Graphics/Logos/drush.png" -t Drush -m "$MSG"

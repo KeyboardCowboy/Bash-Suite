@@ -10,8 +10,13 @@ function gp {
   BRANCH=$(git_get_current_branch)
   REMOTES=$@
 
-  # If no remotes were passed in, push to all remotes.
+  # If no remotes were passed in, push to origin.
   if [[ -z "$REMOTES" ]]; then
+    REMOTES='origin'
+  fi
+
+  # If 'all', get list of remotes
+  if [[ "$REMOTES" == 'all' ]]; then
     REM=`git remote`
 
     # Break the remotes into an array
