@@ -13,11 +13,9 @@ fi
 # If no mask is set, get all files in the current dir.
 [[ -n "$3" ]] && MASK="$3" || MASK="*";
 
-IFS=' ' read -a FILES <<< "$MASK"
-FROM=$1
-TO=$2
-
-for RANGE in "${FILES[@]}"
+for F in $MASK
 do
-  ls $RANGE | awk '{print("mv "$MASK" "$MASK)}' | sed 's/'$FROM'/'$TO'/2' | /bin/sh
+  if [[ -f $F ]]; then
+    mv "$F" "${F/$FROM/$TO}"
+  fi
 done

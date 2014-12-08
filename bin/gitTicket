@@ -7,7 +7,7 @@
 
 NUM="$1"
 DESC="$2"
-NAME=`git config user.name`
+NAME=`git config user.initials`
 
 BRANCH="$NAME-$NUM-$DESC"
 
