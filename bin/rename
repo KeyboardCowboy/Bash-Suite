@@ -15,7 +15,8 @@ fi
 
 for F in $MASK
 do
+  echo $F
   if [[ -f $F ]]; then
-    mv "$F" "${F/$FROM/$TO}"
+    mv "$F" "${F/$1/$2}"
   fi
 done
