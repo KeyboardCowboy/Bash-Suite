@@ -31,13 +31,42 @@ function gp {
 }
 
 ##
-# Remote Git Exporter
+# Are we in a git project?
 ##
-function gex {
-  read -p "REPO: " REPO
-  read -p "TAG: " TAG
+function is_git {
+  echo $(git_get_current_branch) || null
+}
 
-  git archive --format=tar $TAG --remote=$REPO | gzip > $TAG.tar.gz
+##
+# Get the current GIT branch
+##
+function git_get_current_branch {
+  echo $(git symbolic-ref --short -q HEAD) || null
+}
+function gcb {
+  echo $(git symbolic-ref --short -q HEAD) || null
+}
 
-  #git archive --format=tar --remote=ssh://remote_server/remote_repository master | tar -xf -
+##
+# Get the project name from custom config keys.
+##
+function git_project_name {
+  if [ $(is_git) ]; then
+    local PROJ=`git config --get-all project.name`
+
+    if [ -n "$PROJ" ]; then
+      echo "$PROJ"
+    else
+      echo "No project name. (git config project.name 'Project Name')"
+    fi
+  fi
+}
+
+##
+# Get the root directory of this GIT project.
+##
+function git_root_dir {
+  if [ $(is_git) ]; then
+    echo $(git rev-parse --show-toplevel)
+  fi
 }
