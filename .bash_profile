@@ -6,25 +6,25 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # Load environment variables
-source ~/.bash_config/vars.inc
+source ~/.bash_config/vars.bash
 
 # Import color definitions
-source ~/.bash_config/global/colors.inc
+source ~/.bash_config/global/colors.bash
 
 # Load our global aliases and functions
-source ~/.bash_config/global/alias.inc
-source ~/.bash_config/global/functions.inc
+source ~/.bash_config/global/alias.bash
+source ~/.bash_config/global/functions.bash
 
 # Load our custom aliases and functions
-if [ -f ~/.bash_config/local/alias.inc ]; then
-  source ~/.bash_config/local/alias.inc
+if [ -f ~/.bash_config/local/alias.bash ]; then
+  source ~/.bash_config/local/alias.bash
 fi
-if [ -f ~/.bash_config/local/functions.inc ]; then
-  source ~/.bash_config/local/functions.inc
+if [ -f ~/.bash_config/local/functions.bash ]; then
+  source ~/.bash_config/local/functions.bash
 fi
 
 # Initialize the console
-source ~/.bash_config/global/init.inc
-if [ -f ~/.bash_config/local/init.inc ]; then
-  source ~/.bash_config/local/init.inc
+source ~/.bash_config/global/init.bash
+if [ -f ~/.bash_config/local/init.bash ]; then
+  source ~/.bash_config/local/init.bash
 fi

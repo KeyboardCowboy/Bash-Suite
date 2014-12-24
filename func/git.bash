@@ -41,10 +41,11 @@ function is_git {
 # Get the current GIT branch
 ##
 function git_get_current_branch {
-  echo $(git symbolic-ref --short -q HEAD) || null
+  echo $(gcb)
 }
 function gcb {
-  echo $(git symbolic-ref --short -q HEAD) || null
+  ref=$(git symbolic-ref --short -q HEAD 2> /dev/null) || return
+  echo $ref
 }
 
 ##

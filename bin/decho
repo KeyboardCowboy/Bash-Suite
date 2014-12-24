@@ -1,3 +1,3 @@
 #!/bin/bash
-source ~/.bash_config/global/colors.inc
+source ~/.bash_config/global/colors.bash
 echo -e "$(color WHITE BRIGHT)------------------------------------$(color RESET)"
