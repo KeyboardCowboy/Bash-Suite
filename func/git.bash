@@ -1,3 +1,4 @@
+#!/bin/sh
 # Git specific functions
 
 # Git Autocomplete
@@ -34,7 +35,7 @@ function gp {
 # Are we in a git project?
 ##
 function is_git {
-  echo $(git_get_current_branch) || null
+  echo $(gcb) || null
 }
 
 ##

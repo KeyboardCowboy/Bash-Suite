@@ -7,3 +7,4 @@ for f in ~/.bash_config/global/func/*.bash; do
     source $f
   fi
 done
+
