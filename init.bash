@@ -1,3 +1,4 @@
+#!/bin/sh
 # Global Console settings
 #
 # These can be overridden in ~/.bash_config/local/init.bash

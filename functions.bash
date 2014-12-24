@@ -1,3 +1,4 @@
+#!/bin/sh
 # functions.inc
 # Include all function files.
 
