@@ -8,20 +8,20 @@
 #
 function parse_branch {
   local GIT=$(git_get_current_branch) || ''
-  local SVN=$(svn_get_current_branch) || ''
+  #local SVN=$(svn_get_current_branch) || ''
   local GPN=$(git_project_name) || ''
   local BRANCH=''
 
   if [ -n "$GIT" ]; then
     local BRANCH="${GREEN}$GPN${WHITE}"$'\xE2\x96\xB8'"${GREEN}$GIT${WHITE}"
   fi
-  if [ -n "$SVN" ]; then
-    if [ -n "$GIT" ]; then
-      BRANCH="$BRANCH|${YELLOW}$SVN${WHITE}"
-    else
-      BRANCH="${YELLOW}$SVN${WHITE}"
-    fi
-  fi
+  #if [ -n "$SVN" ]; then
+  #  if [ -n "$GIT" ]; then
+  #    BRANCH="$BRANCH|${YELLOW}$SVN${WHITE}"
+  #  else
+  #    BRANCH="${YELLOW}$SVN${WHITE}"
+  #  fi
+  #fi
   if [ -n "$BRANCH" ]; then
     echo -e "($BRANCH${WHITE})"
   fi
