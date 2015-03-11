@@ -5,7 +5,6 @@ alias bcc='bundle exec compass compile'
 alias bi='bundle install'
 alias bu='bundle update'
 alias cc="drush cc all"
-alias conf="cd /var/www/conf"
 alias cp="cp -r"
 alias d="drush -y"
 alias devcheck="grep 'kpr' .;grep 'dpm' .;grep 'console.log' .;"
