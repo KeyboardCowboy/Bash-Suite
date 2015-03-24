@@ -35,7 +35,7 @@ $CHECK /private/var/folders
 $CHECK /private/var/tmp
 
 # Check database dumps
-$CHECK /var/www/db
+$CHECK /Users/Chris/wwwp/db
 
 # Check actual databases
 $CHECK /Applications/MAMP/db/mysql
