@@ -45,8 +45,9 @@ function git_get_current_branch {
   echo $(gcb)
 }
 function gcb {
-  ref=$(git symbolic-ref --short -q HEAD 2> /dev/null) || return
-  echo $ref
+  branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
+  branch_name=${branch_name##refs/heads/}
+  echo $branch_name
 }
 
 ##

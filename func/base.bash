@@ -7,7 +7,7 @@
 # Parse the GIT and SVN branches we may be on
 #
 function parse_branch {
-  local GIT=$(git_get_current_branch) || ''
+  local GIT=$(gcb) || ''
   #local SVN=$(svn_get_current_branch) || ''
   local GPN=$(git_project_name) || ''
   local BRANCH=''
