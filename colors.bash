@@ -9,6 +9,8 @@
 #
 # @param $ground
 #   BG | FG (default)
+#
+# Example: $(color GREEN BRIGHT BG)
 ##
 function color {
   # Define colors and luminosity
