@@ -61,12 +61,15 @@ else
 fi
 
 #
-# Create the default vars.inc file if it is not there.
+# Create the default vars.bash file if it is not there.
 #
-echo "$PRE Creating default vars.inc file."
-if [ ! -f $HD/vars.inc ] && [ -f $HD/global/_vars.inc ]; then
-  cp $HD/global/_vars.inc $HD/vars.inc
+echo "$PRE Creating default vars.bash file."
+if [ ! -f $HD/vars.bash ] && [ -f $HD/global/_vars.bash ]; then
+  cp $HD/global/_vars.bash $HD/vars.bash
 fi
 
 # Open the vars file
-vi ~/.bash_config/vars.inc
+vi ~/.bash_config/vars.bash
+
+# Instructions for initializing
+echo "$PRE Run 'source ~/.bash_profile' to initialize the configuration."
