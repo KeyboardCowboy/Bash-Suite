@@ -22,6 +22,12 @@ function pf() {
   pbpaste > $1
 }
 
+function openweb {
+  case $1 in
+    'dop')
+      open http://drupal.org/project/$2;;
+  esac
+}
 # Reset Quicksilver if results start getting wonky
 #function resetQS() {
 #

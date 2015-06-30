@@ -28,15 +28,15 @@ function parse_branch {
 }
 
 # Tree climber
-function .. {
-  [[ -n $1 ]] && DEPTH=$1 || DEPTH=1
+#function .. {
+#  [[ -n $1 ]] && DEPTH=$1 || DEPTH=1
 
-  COUNTER=0
-  while [ $COUNTER -lt $DEPTH ]; do
-    cd ..
-    let COUNTER=COUNTER+1
-  done
-}
+#  COUNTER=0
+#  while [ $COUNTER -lt $DEPTH ]; do
+#    cd ..
+#    let COUNTER=COUNTER+1
+#  done
+#}
 
 # Add the project name to the console title
 function set_title {
