@@ -31,7 +31,7 @@ alias l='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahl;echo -e "${SYSCOLOR}
 alias logs='cd /Applications/MAMP/logs'
 alias mkdir="mkdir -p"
 alias matrix='LC_ALL=C tr -c "[:digit:]" " " < /dev/urandom | dd cbs=$COLUMNS conv=unblock | GREP_COLOR="1;32" grep --color "[^ ]"'
-alias nomode="git config core.filemode false"
+alias notify="terminal-notifier"
 alias p="cd ..; l"
 alias ping='ping -c 5'
 alias rebash="source ~/.bash_profile"

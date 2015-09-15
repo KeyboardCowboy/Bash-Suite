@@ -166,6 +166,15 @@ function ll() {
   decho
 }
 
+# Development Env Status
+function denv {
+  decho
+  echo "You are:" $(whoami)
+  echo "PWD:" $(pwd)
+  echo "Git Repo:" $(git config project.name)
+  decho
+}
+
 # Set the console title
 function title() {
   if [ -n "$1" ]; then
