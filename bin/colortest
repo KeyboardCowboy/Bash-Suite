@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+ Color_Off='\e[0m'       # Text Reset
+     Green='\e[0;32m'        # Green
+    BGreen='\e[1;32m'       # Green
+    UGreen='\e[4;32m'       # Green
+  On_Green='\e[42m'       # Green
+    IGreen='\e[0;92m'       # Green
+   BIGreen='\e[1;92m'      # Green
+ On_IGreen='\e[0;102m'   # Green
+
+ off="\033[0m"
+
+  echo -e "\033[0;32m Normal Dull.${off}\n"
+  echo -e "\033[1;32m Bold Dull.${off}\n"
+
+  echo -e "\033[0;92m Normal Bright.${off}\n"
+  echo -e "\033[1;92m Bold Bright.${off}\n"
+
+  echo -e "\033[4;32m Normal Dull Underline.${off}\n"
+  echo -e "\033[4;92m Normal Bright Underline.${off}\n"
+
+  echo -e "\033[42m      Background Dull Normal Dull.${off}\n"
+  echo -e "\033[7;32m      Background Dull Normal Black.${off}\n"
+  echo -e "\033[0;102m      Background Bright Normal Dull.${off}\n"
+  echo -e "\033[1;102m      Background Bright Bold Bright.${off}\n"
+  echo -e "\033[7;102m      Background Invert Normal Bright.${off}\n"

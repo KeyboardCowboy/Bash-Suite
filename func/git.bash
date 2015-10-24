@@ -45,9 +45,11 @@ function git_get_current_branch {
   echo $(gcb)
 }
 function gcb {
-  branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
-  branch_name=${branch_name##refs/heads/}
-  echo $branch_name
+  local branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
+
+  if [ -n "$branch_name" ]; then
+    echo ${branch_name##refs/heads/}
+  fi
 }
 
 ##

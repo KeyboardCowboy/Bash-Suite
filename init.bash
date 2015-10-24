@@ -5,10 +5,17 @@
 
 # Set the command prompt
 export PS1="\[${SYSCOLOR}\][\u\[${WHITE}\]@\[${SYSCOLOR}\]${TITLE}\[${WHITE}\]\[\$(parse_branch)\]\[${WHITE}\]: \W\[${SYSCOLOR}\]]\[${RESET}\]"$'\xe2\x86\x92 $(set_title)'
+
+ME=$(color CYAN BRIGHT BG)
+LOC=$(color BLUE BRIGHT BG)
+GIT=$(color GREEN BRIGHT BG)
+
+export PS1=$(set_prompt)
+
 export PROMPT_COMMAND='export ERR=$?'
 
 # Add our bins to the path
-export PATH=$PATH:~/.bash_config/global/bin:~/.bash_config/local/bin
+export PATH=$PATH:~/.drush/bin:~/.bash_config/global/bin:~/.bash_config/local/bin
 
 # Set the title
 title

@@ -4,27 +4,84 @@
 # SYSTEM LEVEL FUNCTIONS
 
 ##
-# Parse the GIT and SVN branches we may be on
+# Set the bash prompt lines
+##
+function set_prompt {
+  local BG_CYAN="\[$(color CYAN BRIGHT BG)\]"
+  local BG_GREEN="\[$(color GREEN BRIGHT BG)\]"
+  local BG_GREEN_DULL="\[$(color GREEN DULL BG)\]"
+  local BG_PURPLE="\[$(color VIOLET BRIGHT BG)\]"
+  local RESET="\[$(color RESET)\]"
+
+  UPurple='\e[4;35m'      # Purple
+  UCyan='\e[4;36m'        # Cyan
+  UGreen='\e[1;32m'       # Green
+  UBlue='\e[4;34m'        # Blue
+  UYellow='\e[4;33m'      # Yellow
+
+  # Hostname
+  PS1="\n${UCyan}\h $(ps1_separator)"
+
+  # Drush alias setting.
+  PS1+="${UBlue}\$(get_drush_site)"
+
+  # Git Info
+  PS1+="${SEPARATOR}${GREEN_UL}\$(get_git_ps1)"
+
+  # Location
+  PS1+="${SEPARATOR}${UYellow} \w"
+
+  # New Line
+  PS1+="${RESET}\n"
+
+  # Cursor
+  PS1+="${CYAN}\u: $(color CYAN BRIGHT)"$CHAR_X"${RESET}"
+
+  # Set the console title to the git project.
+  set_title
+
+  echo "$PS1 "
+}
+
+##
+# Get the current drush site if set.
 #
-function parse_branch {
+# Drush was hacked to remove the posix_getppid() tail of the filename so that
+# the alias would remain consistent across sessions.
+#
+# @see drush_sitealias_get_envar_filename()
+##
+function get_drush_site {
+  local ME=`whoami`
+  local FILE="$TMPDIR/drush-env-$ME/drush-drupal-site-"
+
+  # First, make sure there is at least one file that matches the pattern.
+  if ls $FILE 1> /dev/null 2>&1; then
+    # Get the most recent file
+    CURRENT=`ls -t $FILE | head -1`
+    SITE=`cat $CURRENT`
+    echo " $SITE $(ps1_separator)"
+  fi
+
+  # @todo If there is not a site set, try to determine what site alias scope we
+  # are inside, if any.
+}
+
+##
+# Get the git PS1 string
+##
+function get_git_ps1 {
   local GIT=$(gcb) || ''
-  #local SVN=$(svn_get_current_branch) || ''
   local GPN=$(git_project_name) || ''
-  local BRANCH=''
 
   if [ -n "$GIT" ]; then
-    local BRANCH="${GREEN}$GPN${WHITE}"$'\xE2\x96\xB8'"${GREEN}$GIT${WHITE}"
+    echo " $GPN ${CHAR_QUAD_DIAMOND} $GIT $(ps1_separator)"
   fi
-  #if [ -n "$SVN" ]; then
-  #  if [ -n "$GIT" ]; then
-  #    BRANCH="$BRANCH|${YELLOW}$SVN${WHITE}"
-  #  else
-  #    BRANCH="${YELLOW}$SVN${WHITE}"
-  #  fi
-  #fi
-  if [ -n "$BRANCH" ]; then
-    echo -e "($BRANCH${WHITE})"
-  fi
+}
+
+function ps1_separator {
+  UWhite='\033[4;37m'       # White
+  echo -e "${UWhite}${CHAR_DOUBLE_BACKSLASH}"
 }
 
 # Tree climber

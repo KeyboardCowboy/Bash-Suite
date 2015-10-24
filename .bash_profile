@@ -8,8 +8,9 @@ fi
 # Load environment variables
 source ~/.bash_config/vars.bash
 
-# Import color definitions
+# Import color definitions and special characters
 source ~/.bash_config/global/colors.bash
+source ~/.bash_config/global/characters.bash
 
 # Load our global aliases and functions
 source ~/.bash_config/global/alias.bash
