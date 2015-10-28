@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+#
+# Shortcut to checkout a feature branch from a ticket number.
+
+KEY=-1
+
+# Require a parameter.
+if [[ -z "$1" ]]; then
+  echo "What are you searching for?"
+  exit 1
+fi
+
+# Look for the pattern in git branches.
+BRANCHES=($(git branch | grep $1))
+
+# Split up multiple results.
+LIST=("EXIT")
+
+if [ ${#BRANCHES[@]} == 1 ]; then
+  git co $BRANCHES[0]
+else
+  LIST=("${LIST[@]}" "${BRANCHES[@]}")
+  CNT=${#LIST[@]}
+
+  # Make sure the user picks a valid number.
+  while [[ $KEY < 0 ]] || [[ $KEY > $CNT ]]; do
+    for (( i=0; i<${CNT}; i++ )); do
+      ITEM=${LIST[$i]}
+      echo "[$i] : $ITEM"
+    done
+    read -p "Choose a branch to checkout: " KEY
+  done
+fi
+
+# Checkout the desired branch.
+if [ $KEY == 0 ]; then
+  echo "Nevermind."
+else
+  git checkout ${LIST[$KEY]}
+fi
