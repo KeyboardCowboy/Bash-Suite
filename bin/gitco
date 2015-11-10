@@ -17,7 +17,8 @@ BRANCHES=($(git branch | grep $1))
 LIST=("EXIT")
 
 if [ ${#BRANCHES[@]} == 1 ]; then
-  git co $BRANCHES[0]
+  git co $BRANCHES
+  exit 0
 else
   LIST=("${LIST[@]}" "${BRANCHES[@]}")
   CNT=${#LIST[@]}

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ALIASES
 alias b="cd -"
 alias bcw='bundle exec compass watch'
@@ -5,7 +6,7 @@ alias bcc='bundle exec compass compile'
 alias bi='bundle install'
 alias bu='bundle update'
 alias cc="drush cc all"
-alias cdg="cd $(git rev-parse --show-toplevel)"
+alias cdg="cd \$(git rev-parse --show-toplevel 2> /dev/null) || ."
 alias cp="cp -r"
 alias d="drush -y"
 alias devcheck="grep 'kpr' .;grep 'dpm' .;grep 'console.log' .;"

@@ -35,7 +35,12 @@ function gp {
 # Are we in a git project?
 ##
 function is_git {
-  echo $(gcb) || null
+  GIT=`git -q rev-parse --git-dir 2> /dev/null;`
+  if [ $GIT ]; then
+    echo "Git is $GIT"
+  else
+    echo "Git is not."
+  fi
 }
 
 ##
@@ -45,10 +50,12 @@ function git_get_current_branch {
   echo $(gcb)
 }
 function gcb {
-  local branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
+  if [ -n "$(is_git)" ]; then
+    local branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
 
-  if [ -n "$branch_name" ]; then
-    echo ${branch_name##refs/heads/}
+    if [ -n "$branch_name" ]; then
+      echo ${branch_name##refs/heads/}
+    fi
   fi
 }
 
@@ -56,7 +63,7 @@ function gcb {
 # Get the project name from custom config keys.
 ##
 function git_project_name {
-  if [ $(is_git) ]; then
+  if [ -n "$(is_git)" ]; then
     local PROJ=`git config --get-all project.name`
 
     if [ -n "$PROJ" ]; then
@@ -71,7 +78,7 @@ function git_project_name {
 # Get the root directory of this GIT project.
 ##
 function git_root_dir {
-  if [ $(is_git) ]; then
-    echo $(git rev-parse --show-toplevel)
+  if [ -n "$(is_git)" ]; then
+    echo ""#$(git rev-parse --show-toplevel)
   fi
 }

@@ -66,12 +66,6 @@ function dopen {
   open $DIR;
 }
 
-# Use drush to specify a directory to open with Atom.
-function datom {
-  DIR=$(_dd $1 $2);
-  atom $DIR;
-}
-
 # Create a new Drupal 7 site with default credentials.
 function newD7() {
   SITENAME=$1
@@ -96,5 +90,14 @@ function newD7() {
     fi
   else
     echo "Specify a site name."
+  fi
+}
+
+# Safely get the current drush version.
+function drush_version {
+  local DRUSH=`which drush`
+
+  if [ -n "$DRUSH" ]; then
+    echo `drush --version --pipe`
   fi
 }
