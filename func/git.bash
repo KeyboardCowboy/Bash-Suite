@@ -35,12 +35,7 @@ function gp {
 # Are we in a git project?
 ##
 function is_git {
-  GIT=`git -q rev-parse --git-dir 2> /dev/null;`
-  if [ $GIT ]; then
-    echo "Git is $GIT"
-  else
-    echo "Git is not."
-  fi
+  echo `git rev-parse --git-dir 2> /dev/null;`
 }
 
 ##

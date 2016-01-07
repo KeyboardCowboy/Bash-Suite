@@ -111,3 +111,37 @@ function req_var() {
     exit 1
   fi
 }
+
+##
+# Die if a command is not installed.
+##
+function require_command {
+  command -v $1 >/dev/null 2>&1 || exit 1;
+}
+
+##
+# Jump back to a specified dir.
+##
+function cdb {
+  STOP="/$1/"
+  PWD=`pwd`
+
+  # Check that the desired dir is in the path.
+  if [[ $PWD == *"$STOP"* ]]; then
+    START=$(strindex $PWD $STOP)
+
+    if [ $START != -1 ]; then
+      END=$(($START + ${#STOP}))
+      GOTO=${PWD:0:$END}
+      cd $GOTO
+    fi
+  fi
+}
+
+##
+# Get the substring index of a string.
+##
+function strindex {
+  x="${1%%$2*}"
+  [[ $x = $1 ]] && echo -1 || echo ${#x}
+}

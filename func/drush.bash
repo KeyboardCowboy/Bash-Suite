@@ -94,10 +94,19 @@ function newD7() {
 }
 
 # Safely get the current drush version.
+#
+# We could use `drush --version --pipe` but it required bootstrapping drush
+#   which is too expensive for things like a bash prompt.
 function drush_version {
-  local DRUSH=`which drush`
+  $(require_command drush) || exit 1
 
-  if [ -n "$DRUSH" ]; then
-    echo `drush --version --pipe`
-  fi
+  # Get the path to the actual drush command.
+  DRUSH_PATH=`command -v drush`
+  DRUSH_PATH=`readlink -f $DRUSH_PATH`".info"
+
+  # Trim the version out of the info file.
+  VERSION=`cat $DRUSH_PATH`
+  VERSION=${VERSION#drush_version=}
+
+  echo "$VERSION"
 }

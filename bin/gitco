@@ -10,16 +10,22 @@ if [[ -z "$1" ]]; then
   exit 1
 fi
 
+echo "Looking for branches with $1"
+
 # Look for the pattern in git branches.
-BRANCHES=($(git branch | grep $1))
+BRANCHES=(`git branch | grep $1`)
 
 # Split up multiple results.
 LIST=("EXIT")
+
+# Why is this loading all files and directories as well as git branches?
+echo "${#BRANCHES[@]} items in branches"
 
 if [ ${#BRANCHES[@]} == 1 ]; then
   git co $BRANCHES
   exit 0
 else
+  echo "Found ${#BRANCHES[@]} possible matches..."
   LIST=("${LIST[@]}" "${BRANCHES[@]}")
   CNT=${#LIST[@]}
 

@@ -36,7 +36,7 @@ function set_prompt {
   PS1+="${CYAN}\u: $(color CYAN BRIGHT)"$CHAR_X"${RESET}"
 
   # Set the console title to the git project.
-  set_title
+  PS1+="$(ps1_title)"
 
   echo "$PS1 "
 }
@@ -60,7 +60,7 @@ function ps1_drush {
     local FILE="$TMPDIR/drush-env-$ME/drush-drupal-site-"
 
     # Get the drush version.
-    VER=`drush --version --pipe`
+    VER=$(drush_version)
     OUT="$(ps1_separator)${COLOR}$VER"
 
     # First, make sure there is at least one file that matches the pattern.
@@ -91,6 +91,20 @@ function ps1_git {
   fi
 }
 
+##
+# Set the tab title.
+##
+function ps1_title {
+  if [ -n "$(is_git)" ]; then
+    title "$(git_project_name)"
+  else
+    title
+  fi
+}
+
+##
+# Character to separate components in the PS1 environment line.
+##
 function ps1_separator {
   UWhite='\033[4;37m'       # White
   echo -e "${UWhite} ${CHAR_DOUBLE_BACKSLASH} "

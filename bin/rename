@@ -13,10 +13,12 @@ fi
 # If no mask is set, get all files in the current dir.
 [[ -n "$3" ]] && MASK="$3" || MASK="*";
 
-for F in $MASK
+for ORIG in $MASK
 do
-  echo $F
-  if [[ -f $F ]]; then
-    mv "$F" "${F/$1/$2}"
+  if [[ -f $ORIG ]] || [[ -d $ORIG ]]; then
+    NEW=${ORIG/$1/$2}
+
+    echo "$ORIG >> $NEW"
+    mv "$ORIG" "$NEW"
   fi
 done

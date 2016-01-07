@@ -12,6 +12,3 @@ export PROMPT_COMMAND='export ERR=$?'
 
 # Add our bins to the path
 export PATH=$PATH:~/.drush/bin:~/.bash_config/global/bin:~/.bash_config/local/bin
-
-# Set the title
-title
