@@ -16,11 +16,13 @@
 # Level 2: May have some side effects
 # Level 3: Definitely has side effects. Last resort only!
 
-source ~/.bash_config/global/colors.inc
+source ~/.bash_config/global/colors.bash
 
 CHECK="sudo du -sh"
 
 echo -e "${GREEN}Scanning directories...${RESET}";
+
+echo -e "${RED}Do not delete these manually!\nhttp://osxdaily.com/2016/01/13/delete-temporary-items-private-var-folders-mac-os-x/${RESET}";
 
 # Check the Sleep Image
 $CHECK /private/var/vm
@@ -34,14 +36,18 @@ $CHECK /private/var/folders
 # Check temp files
 $CHECK /private/var/tmp
 
-# Check database dumps
-$CHECK /Users/Chris/wwwp/db
+echo -e "${YELLOW}Proceed with caution.${RESET}";
 
 # Check actual databases
 $CHECK /Applications/MAMP/db/mysql
 
 # Check cached data
 $CHECK ~/Library/Caches
+
+echo -e "${GREEN}Unleash hell.${RESET}";
+
+# Check database dumps
+$CHECK ~/www/db
 
 # Check the trash
 $CHECK ~/.Trash

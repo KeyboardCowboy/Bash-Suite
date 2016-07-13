@@ -29,3 +29,5 @@ source ~/.bash_config/global/init.bash
 if [ -f ~/.bash_config/local/init.bash ]; then
   source ~/.bash_config/local/init.bash
 fi
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"

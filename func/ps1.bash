@@ -57,10 +57,11 @@ function ps1_drush {
 
   if [ -n "$DRUSH" ]; then
     local ME=`whoami`
-    local FILE="$TMPDIR/drush-env-$ME/drush-drupal-site-"
+    local FILE="$TMPDIR/drush-env-$ME/drush-drupal-site-$$"
 
     # Get the drush version.
     VER=$(drush_version)
+    ALIAS=$(drush get-alias)
     OUT="$(ps1_separator)${COLOR}$VER"
 
     # First, make sure there is at least one file that matches the pattern.

@@ -23,17 +23,18 @@ alias gr="git remote -v"
 alias grep='grep -rn'
 alias gs="git status"
 alias hideSystemFiles="defaults write com.apple.Finder AppleShowAllFiles NO;killall Finder;"
-alias howbigis="sudo du -sh"
 alias hpr="hub pull-request -o -m"
 alias j="jekyll"
+alias jsl="bundle exec jekyll s --config=_config.yml,_config-local.yml"
 alias kopen="open -a 'Komodo Edit'"
 alias kotools="cd ~/Library/Application\ Support/KomodoEdit/8.5/tools"
-alias l='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahl;echo -e "${SYSCOLOR}"`pwd`"${RESET}";decho;'
+alias ll='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahl;echo -e "${SYSCOLOR}"`pwd`"${RESET}";decho;'
+alias lls='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahlS;echo -e "${SYSCOLOR}"`pwd`"${RESET}";decho;'
 alias logs='cd /Applications/MAMP/logs'
 alias mkdir="mkdir -p"
 alias matrix='LC_ALL=C tr -c "[:digit:]" " " < /dev/urandom | dd cbs=$COLUMNS conv=unblock | GREP_COLOR="1;32" grep --color "[^ ]"'
 alias notify="terminal-notifier"
-alias p="cd ..; l"
+alias p="cd ..; ll"
 alias ping='ping -c 5'
 alias rebash="source ~/.bash_profile"
 alias settings="cp sites/default/default.settings.php sites/default/settings.php"

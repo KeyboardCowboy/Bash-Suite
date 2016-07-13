@@ -102,7 +102,7 @@ function drush_version {
 
   # Get the path to the actual drush command.
   DRUSH_PATH=`command -v drush`
-  DRUSH_PATH=`readlink -f $DRUSH_PATH`".info"
+  DRUSH_PATH=`greadlink -f $DRUSH_PATH`".info"
 
   # Trim the version out of the info file.
   VERSION=`cat $DRUSH_PATH`
@@ -110,3 +110,10 @@ function drush_version {
 
   echo "$VERSION"
 }
+
+# Traverse into a site directory and set it as the alias.
+function dset {
+  drush use $1
+  cdd $1
+}
+
