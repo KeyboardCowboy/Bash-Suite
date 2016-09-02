@@ -27,13 +27,13 @@ function set_prompt {
   PS1+="\$(ps1_git '${GREEN_UL}')"
 
   # Location
-  PS1+="$(ps1_separator)${UYellow}\w"
+  PS1+="$(ps1_separator 'und')${UYellow}\w"
 
   # New Line
   PS1+="${RESET}\n"
 
   # Cursor
-  PS1+="${CYAN}\u: $(color CYAN BRIGHT)"$CHAR_X"${RESET}"
+  PS1+="${CYAN}$(date +%H:%M:%S)$(ps1_separator)${CYAN}\u: $(color CYAN BRIGHT)"$CHAR_X"${RESET}"
 
   # Set the console title to the git project.
   PS1+="$(ps1_title)"
@@ -43,11 +43,6 @@ function set_prompt {
 
 ##
 # Get the current drush site if set.
-#
-# Drush was hacked to remove the posix_getppid() tail of the filename so that
-# the alias would remain consistent across sessions.
-#
-# @see drush_sitealias_get_envar_filename()
 ##
 function ps1_drush {
   # Make sure we can find drush.
@@ -61,8 +56,7 @@ function ps1_drush {
 
     # Get the drush version.
     VER=$(drush_version)
-    ALIAS=$(drush get-alias)
-    OUT="$(ps1_separator)${COLOR}$VER"
+    OUT="$(ps1_separator 'und')${COLOR}$VER"
 
     # First, make sure there is at least one file that matches the pattern.
     if ls $FILE 1> /dev/null 2>&1; then
@@ -88,7 +82,7 @@ function ps1_git {
   local GPN=$(git_project_name) || ''
 
   if [ -n "$GIT" ]; then
-    echo "$(ps1_separator)${COLOR}$GPN ${CHAR_QUAD_DIAMOND} $GIT"
+    echo "$(ps1_separator 'und')${COLOR}$GPN ${CHAR_QUAD_DIAMOND} $GIT"
   fi
 }
 
@@ -107,6 +101,12 @@ function ps1_title {
 # Character to separate components in the PS1 environment line.
 ##
 function ps1_separator {
-  UWhite='\033[4;37m'       # White
-  echo -e "${UWhite} ${CHAR_DOUBLE_BACKSLASH} "
+  local UWhite='\033[4;37m'
+  local White='\e[0;37m'
+
+  if [[ "$1" == "und" ]]; then
+    echo -e "${UWhite} ${CHAR_DOUBLE_BACKSLASH} "
+  else
+    echo -e "${White} ${CHAR_DOUBLE_BACKSLASH} "
+  fi
 }
