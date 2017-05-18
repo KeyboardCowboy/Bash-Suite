@@ -1,24 +1,32 @@
 #!/bin/bash
 # File: rename
-# Created: 2013-May-10 12:59:43
-# Author: Chris Albrecht
+# Author: Chris Albrecht (chris at lullabot dot com)
 #
 # Bulk renaming of files.
 
-if [[ -z "$1" ]] || [[ -z "$2" ]]; then
-  echo "Usage: rename <from> <to> [\"<mask>\"] "
+FROM=$1
+TO=$2
+FILTER=$3
+
+if [[ -z "$FROM" ]] || [[ -z "$TO" ]]; then
+  echo "Usage: rename <from> <to> [\"<filter>\"] "
   exit 1
 fi
 
 # If no mask is set, get all files in the current dir.
-[[ -n "$3" ]] && MASK="$3" || MASK="*";
+if [[ -z "$FILTER" ]]; then
+  FILTER="*"
+fi
 
-for ORIG in $MASK
+for ORIG in $FILTER
 do
   if [[ -f $ORIG ]] || [[ -d $ORIG ]]; then
-    NEW=${ORIG/$1/$2}
+    NEW=${ORIG/$FROM/$TO}
 
-    echo "$ORIG >> $NEW"
-    mv "$ORIG" "$NEW"
+    # If the new filename would be different, rename the file.
+    if [[ $NEW != $ORIG ]]; then
+      echo "$ORIG >> $NEW"
+      mv "$ORIG" "$NEW"
+    fi
   fi
 done

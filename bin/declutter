@@ -39,7 +39,7 @@ $CHECK /private/var/tmp
 echo -e "${YELLOW}Proceed with caution.${RESET}";
 
 # Check actual databases
-$CHECK /Applications/MAMP/db/mysql
+$CHECK /Applications/MAMP/db/mysql56
 
 # Check cached data
 $CHECK ~/Library/Caches

@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Symlink shared files and directories into an .idea directory.
+
+# Make sure we are in an .idea dir.
+if [ ${PWD##*/} != '.idea' ]; then
+  echo "This script must be run within an .idea directory."
+  exit 1
+fi
+
+# Symlink scopes.
+if [ -d "./scopes" ] && [ ! -h "./scopes" ]; then
+  mv scopes scopes.bak
+fi
+ln -sf "/Users/Chris/Dropbox (Personal)/Mac Environment/config/phpStormShared/scopes"
+echo "Linked shared scopes."
+
+# Symlink colors.
+if [ -f "./fileColors.xml" ] && [ ! -h "./fileColors.xml" ]; then
+  mv fileColors.xml fileColors.xml.bak
+fi
+ln -sf "/Users/Chris/Dropbox (Personal)/Mac Environment/config/phpStormShared/fileColors.xml"
+echo "Linked shared file colors."

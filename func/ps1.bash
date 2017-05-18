@@ -33,7 +33,7 @@ function set_prompt {
   PS1+="${RESET}\n"
 
   # Cursor
-  PS1+="${CYAN}$(date +%H:%M:%S)$(ps1_separator)${CYAN}\u: $(color CYAN BRIGHT)"$CHAR_X"${RESET}"
+  PS1+="${CYAN}\u: $(color CYAN BRIGHT)"$CHAR_X"${RESET}"
 
   # Set the console title to the git project.
   PS1+="$(ps1_title)"

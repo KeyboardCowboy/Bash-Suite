@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#
+# Show status of possible my.cnf files.
+
+LOCS=('/etc/my.cnf' '/etc/mysql/my.cnf' '/Applications/MAMP/conf/my.cnf' '~/.my.cnf')
+
+echo "In order of precedence:"
+
+for I in ${LOCS[@]}; do
+  if [[ -f $I ]]; then
+  	echo "YES : $I"
+  else
+  	echo " NO : $I"
+  fi
+done

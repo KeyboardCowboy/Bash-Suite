@@ -3,41 +3,51 @@
 # Shortcut to checkout a feature branch from a ticket number.
 
 KEY=-1
+SEARCH=$1
 
 # Require a parameter.
-if [[ -z "$1" ]]; then
+if [[ -z "$SEARCH" ]]; then
   echo "What are you searching for?"
   exit 1
 fi
 
-echo "Looking for branches with $1"
+echo "Looking for branches with $SEARCH"
 
 # Look for the pattern in git branches.
-BRANCHES=(`git branch | grep $1`)
+BRANCHES=(`git branch | grep $SEARCH`)
 
 # Split up multiple results.
 LIST=("EXIT")
 
 # Why is this loading all files and directories as well as git branches?
-echo "${#BRANCHES[@]} items in branches"
+#echo "${#BRANCHES[@]} items in branches"
 
+# Exit of there are no matching branches.
+if [ ${#BRANCHES[@]} == 0 ]; then
+  echo "No branches matching $SEARCH."
+  exit 0
+fi
+
+# If only one matching branch was found, check it out.
 if [ ${#BRANCHES[@]} == 1 ]; then
+  echo "Found 1 branch matching $SEARCH."
   git co $BRANCHES
   exit 0
-else
-  echo "Found ${#BRANCHES[@]} possible matches..."
-  LIST=("${LIST[@]}" "${BRANCHES[@]}")
-  CNT=${#LIST[@]}
-
-  # Make sure the user picks a valid number.
-  while [[ $KEY < 0 ]] || [[ $KEY > $CNT ]]; do
-    for (( i=0; i<${CNT}; i++ )); do
-      ITEM=${LIST[$i]}
-      echo "[$i] : $ITEM"
-    done
-    read -p "Choose a branch to checkout: " KEY
-  done
 fi
+
+# There are multiple options, so give the user a choice.
+echo "Found ${#BRANCHES[@]} possible matches..."
+LIST=("${LIST[@]}" "${BRANCHES[@]}")
+CNT=${#LIST[@]}
+
+# Make sure the user picks a valid number.
+while [[ $KEY < 0 ]] || [[ $KEY > $CNT ]]; do
+  for (( i=0; i<${CNT}; i++ )); do
+	ITEM=${LIST[$i]}
+	echo "[$i] : $ITEM"
+  done
+  read -p "Choose a branch to checkout: " KEY
+done
 
 # Checkout the desired branch.
 if [ $KEY == 0 ]; then
