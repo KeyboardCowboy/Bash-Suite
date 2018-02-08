@@ -128,3 +128,10 @@ function drupal_req_site_or_module_root() {
     exit 1
   fi
 }
+
+##
+# Open a Drupal.org project page.
+##
+function dop {
+  open "https://www.drupal.org/project/$1"
+}

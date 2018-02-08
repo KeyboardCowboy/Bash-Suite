@@ -14,7 +14,12 @@ fi
 echo "Looking for branches with $SEARCH"
 
 # Look for the pattern in git branches.
-BRANCHES=(`git branch | grep $SEARCH`)
+BRANCHES=(`git branch --list "*$SEARCH*" | tr '*' ' '`)
+
+# TODO: Remove the current branch from the list.
+
+#printf '%s\n' "${BRANCHES[@]}"
+#exit 1
 
 # Split up multiple results.
 LIST=("EXIT")

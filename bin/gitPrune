@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+#
+# Review all local branches in a Git repo and prune the ones that have been
+# merged.
+
+source "/Users/Chris/.bash_config/global/func/tools.bash"
+
+# Initialize parameters.
+REMOTE=$1
+
+if [ -z "$REMOTE" ];then
+  print_error "You need to provide a remote to check against."
+  exit 1
+fi
+
+# Update with pruned references to the REMOTE.
+git fetch $REMOTE -p
+
+# List merged branches.
+print_message "The following branches have been merged on $REMOTE. Delete local branch?"
+for BRANCH in $(git branch --list --format='%(refname:short)' --merged); do
+  # Skip critical branches.
+  if [[ $BRANCH == "master" ]] || [[ $BRANCH == "dev" ]]; then
+    continue
+  fi
+
+  ACTION=''
+#  P=`echo "${YELLOW}$BRANCH${RESET}: ${CYAN}(l)${RESET}ocal ${CYAN}(o)${RESET}rigin, ${CYAN}(s)${RESET}kip, ${CYAN}(e)${RESET}xit: "`
+  P=`echo "$BRANCH [y/n]: "`
+
+  while [[ "$ACTION" != "y" ]] && [[ "$ACTION" != "n" ]]; do
+    read -p "$P" ACTION
+  done
+
+  if [ "$ACTION" == "y" ]; then
+    git branch -D $BRANCH
+  fi
+done

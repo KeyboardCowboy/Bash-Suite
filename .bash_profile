@@ -31,3 +31,4 @@ if [ -f ~/.bash_config/local/init.bash ]; then
 fi
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+

@@ -100,15 +100,9 @@ function newD7() {
 function drush_version {
   $(require_command drush) || exit 1
 
-  # Get the path to the actual drush command.
-  DRUSH_PATH=`command -v drush`
-  DRUSH_PATH=`greadlink -f $DRUSH_PATH`".info"
+  # VERSION=$(echo `drush --version` | cut -d' ' -f 4)
 
-  # Trim the version out of the info file.
-  VERSION=`cat $DRUSH_PATH`
-  VERSION=${VERSION#drush_version=}
-
-  echo "$VERSION"
+  echo `drush --version --pipe`
 }
 
 # Traverse into a site directory and set it as the alias.
@@ -116,4 +110,3 @@ function dset {
   drush use $1
   cdd $1
 }
-
