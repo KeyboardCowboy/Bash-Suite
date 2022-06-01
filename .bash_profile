@@ -9,8 +9,8 @@ fi
 source ~/.bash_config/vars.bash
 
 # Import color definitions and special characters
-source ~/.bash_config/global/colors.bash
-source ~/.bash_config/global/characters.bash
+#source ~/.bash_config/global/colors.bash
+#source ~/.bash_config/global/characters.bash
 
 # Load our global aliases and functions
 source ~/.bash_config/global/alias.bash
@@ -29,6 +29,4 @@ source ~/.bash_config/global/init.bash
 if [ -f ~/.bash_config/local/init.bash ]; then
   source ~/.bash_config/local/init.bash
 fi
-
-test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 

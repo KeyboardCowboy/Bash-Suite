@@ -1,4 +1,0 @@
-
-GIT=$(git_get_current_branch)
-
-print_success $(parse_branch)

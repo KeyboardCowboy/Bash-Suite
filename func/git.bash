@@ -1,9 +1,6 @@
 #!/bin/sh
 # Git specific functions
 
-# Git Autocomplete
-source ~/.bash_config/global/lib/.git-completion.bash
-
 ##
 # Shortcut to push the current branch of a git repo.
 #
