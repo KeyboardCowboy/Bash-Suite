@@ -4,30 +4,6 @@
 # Description: Various global tools for bash functionality.
 
 ##
-# Add a comment to a changelog file
-#
-function add_changelog_comment() {
-  CL=$1
-
-  # Make sure we are in a root to write a changelog entry.
-  drupal_req_site_or_module_root
-
-  # Add a line to the changelog.
-  if [ -f "sites/default/settings.php" ]; then
-    FILE="sites/default/CHANGELOG.txt"
-  else
-    FILE="CHANGELOG.txt"
-  fi
-
-  # Make sure the file exists.
-  touch $FILE
-
-  # Add the new lines to the file.
-  echo -e $CL | cat - $FILE > .tmpCL && mv .tmpCL $FILE
-  echo $FILE
-}
-
-##
 # Get the current column placement and the total number of columns available
 # in the current display.
 ##

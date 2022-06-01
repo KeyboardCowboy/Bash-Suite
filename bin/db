@@ -8,7 +8,7 @@
 FILE=$1
 SUBDIR=$2
 
-source ~/.bash_config/global/lib/shared/tools.inc
+source ~/.bash_config/global/func/tools.bash
 
 # Require a dropbox directory
 req_var DBROOT
