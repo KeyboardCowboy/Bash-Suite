@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Global Console settings
 #
 # These can be overridden in ~/.bash_config/local/init.bash
@@ -11,4 +11,4 @@
 # export PROMPT_COMMAND='export ERR=$?'
 
 # Add our bins to the path
-export ~/.bash_config/global/bin:~/.bash_config/local/bin:$PATH
+export PATH=~/.bash_config/global/bin:~/.bash_config/local/bin:$PATH

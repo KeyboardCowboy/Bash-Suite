@@ -13,8 +13,3 @@ export STITLE=''
 
 # Define the webroot
 export WEBROOT=~/www/htdocs
-
-# Add our custom paths
-export PATH=$PATH:~/.bash_config/global/bin:~/.bash_config/local/bin
-
-# Add any custom vars here

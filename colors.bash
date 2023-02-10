@@ -160,52 +160,56 @@ function color {
    On_IWhite='\e[0;107m'   # White
 
   # Define colors and luminosity
-  local DULL=0
-  local BRIGHT=1
+  declare -A LUMIN=(
+    [DULL]=0
+    [BRIGHT]=1
+  )
 
-  local FG_BLACK=30
-  local FG_RED=31
-  local FG_GREEN=32
-  local FG_YELLOW=33
-  local FG_BLUE=34
-  local FG_VIOLET=35
-  local FG_CYAN=36
-  local FG_WHITE=37
+  declare -A COLOR=()
+  COLOR[FG_BLACK]='30'
+  COLOR[FG_RED]=31
+  COLOR[FG_GREEN]=32
+  COLOR[FG_YELLOW]=33
+  COLOR[FG_BLUE]=34
+  COLOR[FG_VIOLET]=35
+  COLOR[FG_CYAN]=36
+  COLOR[FG_WHITE]=37
 
-  local BG_BLACK=40
-  local BG_RED=41
-  local BG_GREEN=42
-  local BG_YELLOW=43
-  local BG_BLUE=44
-  local BG_VIOLET=45
-  local BG_CYAN=46
-  local BG_WHITE=47
+  COLOR[BG_BLACK]=40
+  COLOR[BG_RED]=41
+  COLOR[BG_GREEN]=42
+  COLOR[BG_YELLOW]=43
+  COLOR[BG_BLUE]=44
+  COLOR[BG_VIOLET]=45
+  COLOR[BG_CYAN]=46
+  COLOR[BG_WHITE]=47
 
-  local FG_NULL=00
-  local BG_NULL=00
+  COLOR[FG_NULL]=00
+  COLOR[BG_NULL]=00
 
   local ESC="\033"
-  local RESET="$ESC[${DULL};${FG_WHITE};${FG_NULL}m"
+  local RESET="${ESC}[${LUMIN[DULL]};${COLOR[FG_WHITE]};${COLOR[FG_NULL]}m"
 
   # Handle Special Cases
   if [[ "$1" == 'RESET' ]]; then
-    echo ${RESET}
+    echo "${RESET}"
     exit 1
   fi
 
   # Set the luminosity, ground and color
-  LUMIN=$2
-  if [[ "$LUMIN" != "BRIGHT" ]]; then
-    LUMIN="DULL"
+  local PLUMIN=${2}
+  if [[ "${PLUMIN}" != "BRIGHT" ]]; then
+    PLUMIN='DULL'
   fi
+
   GROUND=$3
   if [[ "$GROUND" != "BG" ]]; then
     GROUND="FG"
   fi
 
-  local COLOR="${GROUND}_${1}"
+  local BGCOLOR="${GROUND}_${1}"
 
-  echo "$ESC[${!LUMIN};${!COLOR}m"
+  echo "${ESC}[${LUMIN[$PLUMIN]};${COLOR[$BGCOLOR]}m"
 }
 
 ## Create basic colors

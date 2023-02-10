@@ -1,8 +1,0 @@
-#!/bin/bash
-# File: getquote
-# Fetch a quote from iheartquotes.com
-#
-# First parameter is the source string
-
-QUOTE=`wget --timeout=3 -O - -q http://www.iheartquotes.com/api/v1/random?source=$1`
-echo ${QUOTE%[*}
