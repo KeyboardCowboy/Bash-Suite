@@ -147,6 +147,10 @@ function denv {
   decho
 }
 
+function mkdcd() {
+  mkdir -p "$1" && cd $1
+}
+
 # Set the console title
 function title() {
   if [ -n "$1" ]; then
