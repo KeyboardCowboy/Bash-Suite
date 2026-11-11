@@ -35,7 +35,7 @@ alias matrix='LC_ALL=C tr -c "[:digit:]" " " < /dev/urandom | dd cbs=$COLUMNS co
 alias notify="terminal-notifier"
 alias p="cd ..; ll"
 alias ping='ping -c 5'
-alias rebash="source ~/.bash_profile"
+alias rebash="exec zsh -l"
 alias rekey="ssh-keygen -t ed25519 -a 100"
 alias say="say -v Samantha"
 alias settings="cp sites/default/default.settings.php sites/default/settings.php"
