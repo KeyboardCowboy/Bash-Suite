@@ -10,5 +10,4 @@
 
 # export PROMPT_COMMAND='export ERR=$?'
 
-# Add our bins to the path
-export PATH=~/.bash_config/global/bin:~/.bash_config/local/bin:$PATH
+# PATH is built in global/path.zsh

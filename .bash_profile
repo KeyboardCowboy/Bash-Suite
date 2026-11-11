@@ -1,9 +1,7 @@
 #!/bin/bash
 #
-# Load the system bashrc file
-if [ -f /etc/bashrc ]; then
-  source /etc/bashrc
-fi
+# Build PATH first (zsh-only; see path.zsh)
+source ~/.bash_config/global/path.zsh
 
 # Load environment variables
 source ~/.bash_config/vars.bash
