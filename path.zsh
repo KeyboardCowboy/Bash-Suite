@@ -22,8 +22,8 @@ path=(
   ~/.local/bin                   # uv and other user-installed tools
   /opt/homebrew/bin              # Homebrew (Apple Silicon)
   /opt/homebrew/sbin
-  /usr/local/bin                 # legacy Intel Homebrew; remove in Chunk 4c
-  $path                          # system dirs from path_helper, then the rest
+  $path                          # system dirs from path_helper (/usr/local/bin
+                                 # first: app CLI shims like cursor, dayone)
 )
 
 # Machine-specific additions (untracked)
