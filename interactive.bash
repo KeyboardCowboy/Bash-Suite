@@ -15,6 +15,13 @@ if [ -n "$ZSH_VERSION" ]; then
   source ~/.bash_config/global/history.zsh
   source ~/.bash_config/global/hooks.zsh
   autoload -Uz zmv
+
+  # Prompt: Starship, with its config tracked in this repo.
+  # If starship isn't installed, zsh's default prompt is used instead.
+  if command -v starship >/dev/null 2>&1; then
+    export STARSHIP_CONFIG=~/.bash_config/global/starship.toml
+    eval "$(starship init zsh)"
+  fi
 fi
 
 # Global aliases and functions

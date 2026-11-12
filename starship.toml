@@ -1,0 +1,44 @@
+# Starship prompt. Loaded via STARSHIP_CONFIG in interactive.bash.
+# Docs: https://starship.rs/config/   Icons need a Nerd Font in the terminal.
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Line 1: where you are + context. Line 2: the input symbol.
+format = """
+$directory$git_branch$git_state$git_status$nodejs$python$php$cmd_duration$status
+$character"""
+
+[directory]
+truncation_length = 3        # show at most the last 3 path parts
+truncate_to_repo = true      # inside a repo, start the path at the repo root
+
+[git_branch]
+format = '[$symbol$branch]($style) '
+
+[git_status]
+# ! modified  + staged  ? untracked  ⇡ ahead  ⇣ behind  ⇕ diverged  $ stashed  = conflicted
+format = '([\[$all_status$ahead_behind\]]($style) )'
+ahead = '⇡${count}'
+behind = '⇣${count}'
+diverged = '⇕⇡${ahead_count}⇣${behind_count}'
+
+[nodejs]
+format = '[$symbol($version)]($style) '
+
+[python]
+symbol = " "          # Nerd Font Python icon (default is an emoji)
+format = '[$symbol($version)( \($virtualenv\))]($style) '
+
+[php]
+format = '[$symbol($version)]($style) '
+
+[cmd_duration]
+min_time = 2_000             # only when the command took 2s or longer
+format = 'took [$duration]($style) '
+
+[status]
+disabled = false             # show the exit code when the last command failed
+format = '[✘ $status]($style) '
+
+[character]
+success_symbol = '[❯](bold green)'
+error_symbol = '[❯](bold red)'
