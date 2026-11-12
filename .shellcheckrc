@@ -2,5 +2,3 @@
 shell=bash
 # Sources use ~ paths shellcheck can't follow
 disable=SC1090,SC1091
-# colors.bash is a sourced library; "unused" is expected
-disable=SC2034
