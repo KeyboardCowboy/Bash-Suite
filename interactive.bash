@@ -9,6 +9,11 @@
 # a parent shell, so load it here instead of relying on .zprofile.
 source ~/.bash_config/global/colors.bash
 
+# History settings (zsh-only options)
+if [ -n "$ZSH_VERSION" ]; then
+  source ~/.bash_config/global/history.zsh
+fi
+
 # Global aliases and functions
 source ~/.bash_config/global/alias.bash
 source ~/.bash_config/global/functions.bash
