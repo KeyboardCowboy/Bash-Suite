@@ -1,38 +1,41 @@
 #!/usr/bin/env bash
 #
-# Review all local branches in a Git repo and prune the ones that have been
-# merged.
+# gitPrune: refresh REMOTE, then offer to delete each local branch that is
+# already merged into the current branch.
+#   gitPrune origin
 
-source "/Users/Chris/.bash_config/global/func/tools.bash"
+source ~/.bash_config/global/colors.bash
+source ~/.bash_config/global/func/tools.bash
 
-# Initialize parameters.
-REMOTE=$1
-
-if [ -z "$REMOTE" ];then
+remote=$1
+if [[ -z "$remote" ]]; then
   print_error "You need to provide a remote to check against."
   exit 1
 fi
 
-# Update with pruned references to the REMOTE.
-git fetch $REMOTE -p
+# Update with pruned references to the remote.
+git fetch "$remote" --prune || exit 1
 
-# List merged branches.
-print_message "The following branches have been merged on $REMOTE. Delete local branch?"
-for BRANCH in $(git branch --list --format='%(refname:short)' --merged); do
-  # Skip critical branches.
-  if [[ $BRANCH == "master" ]] || [[ $BRANCH == "dev" ]]; then
-    continue
-  fi
+# Collect the list FIRST, so the prompts below read the keyboard, not git.
+current=$(git branch --show-current)
+branches=()
+while IFS= read -r b; do
+  branches+=("$b")
+done < <(git branch --list --format='%(refname:short)' --merged)
 
-  ACTION=''
-#  P=`echo "${YELLOW}$BRANCH${RESET}: ${CYAN}(l)${RESET}ocal ${CYAN}(o)${RESET}rigin, ${CYAN}(s)${RESET}kip, ${CYAN}(e)${RESET}xit: "`
-  P=`echo "$BRANCH [y/n]: "`
+print_message "Branches merged into ${current:-HEAD}. Delete local branch?"
+for branch in "${branches[@]}"; do
+  # Never offer protected branches or the one we're on.
+  case "$branch" in
+    main|master|dev|develop|"$current") continue ;;
+  esac
 
-  while [[ "$ACTION" != "y" ]] && [[ "$ACTION" != "n" ]]; do
-    read -p "$P" ACTION
+  action=''
+  while [[ "$action" != y && "$action" != n ]]; do
+    read -r -p "$branch [y/n]: " action || exit 1
   done
-
-  if [ "$ACTION" == "y" ]; then
-    git branch -D $BRANCH
+  # -d (not -D): git refuses if the branch turns out not to be merged.
+  if [[ "$action" == y ]]; then
+    git branch -d "$branch"
   fi
 done

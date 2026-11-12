@@ -9,9 +9,11 @@
 # a parent shell, so load it here instead of relying on .zprofile.
 source ~/.bash_config/global/colors.bash
 
-# History settings (zsh-only options)
+# zsh-only: history settings, and zmv for bulk renames
+#   zmv '(*).txt' '$1.md'     (use `zmv -n …` to preview first)
 if [ -n "$ZSH_VERSION" ]; then
   source ~/.bash_config/global/history.zsh
+  autoload -Uz zmv
 fi
 
 # Global aliases and functions

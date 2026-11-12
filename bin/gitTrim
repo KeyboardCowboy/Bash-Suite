@@ -1,41 +1,41 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
-# Run through each branch and prompt the user to delete it from the local, a
-# remote, or none.
+# gitTrim: walk every local branch and choose to delete it locally,
+# locally + on origin, skip it, or exit.
 
-# Load utility functions
-source ~/.bash_config/global/functions.bash
+source ~/.bash_config/global/colors.bash
+source ~/.bash_config/global/func/git.bash
 
-if [ "$(is_git)" ]; then
-  echo "Which do you want to delete?"
-
-  for BRANCH in $(git for-each-ref --format='%(refname:short)' refs/heads/); do
-    # Skip critical branches.
-    if [[ $BRANCH == "master" ]]; then
-      continue
-    fi
-
-    ACTION=''
-    P=`echo "${YELLOW}$BRANCH${RESET}: ${CYAN}(l)${RESET}ocal ${CYAN}(o)${RESET}rigin, ${CYAN}(s)${RESET}kip, ${CYAN}(e)${RESET}xit: "`
-
-    while [[ "$ACTION" != "l" ]] && [[ "$ACTION" != "o" ]] && [[ "$ACTION" != "s" ]] && [[ "$ACTION" != "e" ]]; do
-      read -p "$P" ACTION
-    done
-
-    case $ACTION in
-      'l')
-        git branch -D $BRANCH;;
-
-      'o')
-        git push origin --delete $BRANCH
-        git branch -D $BRANCH;;
-
-      's')
-        echo 'skipped...';;
-
-      'e')
-        echo 'exiting...';
-        exit 1;;
-    esac
-  done
+if [[ -z "$(is_git)" ]]; then
+  echo "Not in a git repository." >&2
+  exit 1
 fi
+
+# Collect the list FIRST, so the prompts below read the keyboard, not git.
+current=$(git branch --show-current)
+branches=()
+while IFS= read -r b; do
+  branches+=("$b")
+done < <(git for-each-ref --format='%(refname:short)' refs/heads/)
+
+echo "Which do you want to delete?"
+for branch in "${branches[@]}"; do
+  # Never offer protected branches or the one we're on.
+  case "$branch" in
+    main|master|dev|develop|"$current") continue ;;
+  esac
+
+  prompt="${YELLOW}${branch}${RESET}: ${CYAN}(l)${RESET}ocal, ${CYAN}(o)${RESET}rigin, ${CYAN}(s)${RESET}kip, ${CYAN}(e)${RESET}xit: "
+  action=''
+  while [[ ! "$action" =~ ^[lose]$ ]]; do
+    read -r -p "$prompt" action || exit 1
+  done
+
+  case $action in
+    l) git branch -D "$branch" ;;
+    # Only drop the local copy if the remote delete succeeded.
+    o) git push origin --delete "$branch" && git branch -D "$branch" ;;
+    s) echo "skipped..." ;;
+    e) echo "exiting..."; exit 0 ;;
+  esac
+done

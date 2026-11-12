@@ -1,24 +1,26 @@
-#!/bin/bash
-# File: gitTicket
-# Created: 2014-Oct-20 12:45:42
-# Author: KeyboardCowboy
+#!/usr/bin/env bash
 #
-# Create a new branch with proper ticket naming convention.
+# gitTicket: pull, then create a branch named <initials>-<ticket>-<desc> and
+# record the ticket in the branch description.
+#   gitTicket 123 fix-login   ->  xx-123-fix-login   (xx = git config user.initials)
 
-NUM="$1"
-DESC="$2"
-NAME=`git config user.initials`
+num=$1
+desc=$2
+if [[ -z "$num" || -z "$desc" ]]; then
+  echo "usage: gitTicket <ticket-number> <short-description>" >&2
+  exit 1
+fi
 
-BRANCH="$NAME-$NUM-$DESC"
+if ! initials=$(git config user.initials); then
+  echo "Set your initials first: git config --global user.initials xx" >&2
+  exit 1
+fi
+branch="${initials}-${num}-${desc}"
 
-# Pull in the latest changes
-git pull
+# Start from the latest code; stop if the pull fails.
+git pull || exit 1
+git checkout -b "$branch" || exit 1
 
-# Create the branch
-git checkout -b "$BRANCH"
-
-# Add the ticket tracking description.
-git config branch.$(echo $BRANCH).description "Branch for ticket [#$NUM]"
-
-# Display the branch description
-git config branch.$(echo $BRANCH).description
+# Add the ticket tracking description, then show it.
+git config "branch.${branch}.description" "Branch for ticket [#${num}]"
+git config "branch.${branch}.description"

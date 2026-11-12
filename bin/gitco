@@ -1,62 +1,31 @@
 #!/usr/bin/env bash
 #
-# Shortcut to checkout a feature branch from a ticket number.
+# gitco: check out a local branch by search term.
+#   gitco 123   one match -> check it out; several -> pick from a menu
 
-KEY=-1
-SEARCH=$1
-
-# Require a parameter.
-if [[ -z "$SEARCH" ]]; then
-  echo "What are you searching for?"
+search=$1
+if [[ -z "$search" ]]; then
+  echo "usage: gitco <search>" >&2
   exit 1
 fi
 
-echo "Looking for branches with $SEARCH"
+# --format prints bare names (no "*" current-branch marker to glob-expand),
+# one per line; read them into an array, skipping the current branch.
+current=$(git branch --show-current)
+branches=()
+while IFS= read -r b; do
+  [[ "$b" != "$current" ]] && branches+=("$b")
+done < <(git branch --list --format='%(refname:short)' "*${search}*")
 
-# Look for the pattern in git branches.
-BRANCHES=(`git branch --list "*$SEARCH*" | tr '*' ' '`)
+case ${#branches[@]} in
+  0) echo "No other branches matching '$search'."; exit 0 ;;
+  1) echo "Found 1 branch matching '$search'."; exec git checkout "${branches[0]}" ;;
+esac
 
-# TODO: Remove the current branch from the list.
-
-#printf '%s\n' "${BRANCHES[@]}"
-#exit 1
-
-# Split up multiple results.
-LIST=("EXIT")
-
-# Why is this loading all files and directories as well as git branches?
-#echo "${#BRANCHES[@]} items in branches"
-
-# Exit of there are no matching branches.
-if [ ${#BRANCHES[@]} == 0 ]; then
-  echo "No branches matching $SEARCH."
-  exit 0
-fi
-
-# If only one matching branch was found, check it out.
-if [ ${#BRANCHES[@]} == 1 ]; then
-  echo "Found 1 branch matching $SEARCH."
-  git co $BRANCHES
-  exit 0
-fi
-
-# There are multiple options, so give the user a choice.
-echo "Found ${#BRANCHES[@]} possible matches..."
-LIST=("${LIST[@]}" "${BRANCHES[@]}")
-CNT=${#LIST[@]}
-
-# Make sure the user picks a valid number.
-while [[ $KEY < 0 ]] || [[ $KEY > $CNT ]]; do
-  for (( i=0; i<${CNT}; i++ )); do
-	ITEM=${LIST[$i]}
-	echo "[$i] : $ITEM"
-  done
-  read -p "Choose a branch to checkout: " KEY
+# `select` numbers the options and re-prompts on invalid input.
+echo "Found ${#branches[@]} branches matching '$search':"
+PS3="Choose a number: "
+select b in "${branches[@]}" "(cancel)"; do
+  [[ "$b" == "(cancel)" ]] && { echo "Nevermind."; exit 0; }
+  [[ -n "$b" ]] && exec git checkout "$b"
 done
-
-# Checkout the desired branch.
-if [ $KEY == 0 ]; then
-  echo "Nevermind."
-else
-  git checkout ${LIST[$KEY]}
-fi
