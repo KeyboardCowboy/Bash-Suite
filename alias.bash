@@ -12,8 +12,6 @@ alias gr="git remote -v"
 alias gs="git status"
 alias hideSystemFiles="defaults write com.apple.Finder AppleShowAllFiles NO;killall Finder;"
 alias hpr='gh pr create --web'
-alias ll='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahl;echo -e "${SYSCOLOR}"`pwd`"${RESET}";decho;'
-alias lls='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahlS;echo -e "${SYSCOLOR}"`pwd`"${RESET}";decho;'
 alias mkdir="mkdir -p"
 alias matrix='LC_ALL=C tr -c "[:digit:]" " " < /dev/urandom | dd cbs=$COLUMNS conv=unblock | GREP_COLOR="1;32" grep --color "[^ ]"'
 alias p="cd .."

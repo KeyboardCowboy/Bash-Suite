@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-source ~/.bash_config/global/colors.bash
-echo -e "$(color GREEN BRIGHT)------------------------------------$(color RESET)"
