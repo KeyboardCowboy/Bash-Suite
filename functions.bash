@@ -1,9 +1,10 @@
-#!/bin/sh
-# functions.inc
-# Include all function files.
+#!/usr/bin/env bash
+# functions.bash
+# Load every function file in global/func/.
 
-for f in ~/.bash_config/global/func/*.bash; do
-  if [ -f $f ]; then
-    source $f
+for _bash_config_f in ~/.bash_config/global/func/*.bash; do
+  if [ -f "$_bash_config_f" ]; then
+    source "$_bash_config_f"
   fi
 done
+unset _bash_config_f

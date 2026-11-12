@@ -5,7 +5,8 @@ source ~/.bash_config/global/colors.bash
 
 # Set the system prompt color
 # BLACK | RED | GREEN | YELLOW | BLUE | VIOLET | CYAN | WHITE
-export SYSCOLOR=$(color CYAN)
+SYSCOLOR=$(color CYAN)
+export SYSCOLOR
 
 # Set the terminal short and long titles
 export TITLE=''

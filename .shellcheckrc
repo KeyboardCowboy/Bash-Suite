@@ -1,0 +1,6 @@
+# Files here are bash syntax, sourced by zsh. Lint with: shellcheck *.bash func/*.bash
+shell=bash
+# Sources use ~ paths shellcheck can't follow
+disable=SC1090,SC1091
+# colors.bash / characters.bash are a sourced library; "unused" is expected
+disable=SC2034

@@ -1,68 +1,44 @@
-#!/bin/sh
-# File: tools.inc
-# Author: Chris Albrecht
-# Description: Various global tools for bash functionality.
+#!/usr/bin/env bash
+# tools.bash
+# Message/validation helpers used by scripts in global/bin, plus cdb.
 
 ##
-# Get the current column placement and the total number of columns available
-# in the current display.
+# Print the terminal width in columns (80 if there's no terminal).
 ##
 function col_count() {
-  COLS=`stty size 2>&1`
-  POS=${COLS% *}
-  TOT=${COLS#* }
-
-  echo `expr $TOT`
+  local size
+  size=$(stty size 2>/dev/null) || size="24 80"
+  echo "${size#* }"
 }
 
 ##
-# Echo an ERROR message.
-#
-function print_error() {
-  local STATUS=`echo -e "${RED}[error]${NORMAL}"`
-  print_message "$1" "$STATUS"
-}
+# Print a message with a right-aligned, colored status tag.
+##
+function print_error()   { print_message "$1" "${RED}[error]${RESET}"; }
+function print_success() { print_message "$1" "${GREEN}[success]${RESET}"; }
+function print_warning() { print_message "$1" "${YELLOW}[warning]${RESET}"; }
 
 ##
-# Echo a SUCCESS message.
-#
-function print_success() {
-  STATUS=`echo -e "${GREEN}[success]${NORMAL}"`
-  print_message "$1" "$STATUS"
-}
-
-##
-# Echo a WARNING message.
-#
-function print_warning() {
-  STATUS=`echo -e "${YELLOW}[warning]${YELLOW}"`
-  print_message "$1" "$STATUS"
-}
-
-##
-# Helper function for preparing messages.
+# Helper for the print_* functions: right-align TAG after MSG.
+# (Not named "status": that's a read-only variable in zsh.)
 ##
 function print_message() {
-  local MSG=$1
-  local STATUS=$2
-
-  local COLS=$(col_count)
-  local PAD=${#STATUS}
-  local LEN=${#MSG}
-  local GAP=`expr $COLS - $LEN + $PAD - 11`
-
-  printf "%s %${GAP}s\n" "$MSG" "$STATUS"
+  local msg=$1 tag=$2 cols gap
+  cols=$(col_count)
+  gap=$(( cols - ${#msg} + ${#tag} - 11 ))   # same alignment math as before
+  printf "%s %${gap}s\n" "$msg" "$tag"
 }
 
 ##
-# Ensure a local var is set.
+# req_local / req_var: bash-only (${!1}, read -p); used by scripts in bin/.
 #
+# Ensure a local var is set.
+##
 function req_local() {
-  VAR=$1
-  VAL=${!1}
+  local var=$1 val=${!1}
 
-  if [ -z "$VAL" ]; then
-    echo "$PRE Unable to define variable $VAR. Exiting..."
+  if [ -z "$val" ]; then
+    echo "$PRE Unable to define variable $var. Exiting..."
     exit 1
   fi
 }
@@ -71,21 +47,20 @@ function req_local() {
 # Ensure a global variable is set and open the vars file if not.
 ##
 function req_var() {
-  VAR=$1
-  VAL=${!1}
+  local var=$1 val=${!1}
 
-  if [ -z "$VAL" ]; then
-    read -p "$PRE Missing variable $VAR. Press any key to continue. " X
-    vi ~/.bash_config/vars.inc
+  if [ -z "$val" ]; then
+    read -r -p "$PRE Missing variable $var. Press enter to continue. "
+    vi ~/.bash_config/vars.bash
     exit 1
   fi
 }
 
 ##
-# Die if a command is not installed.
+# Die if a command is not installed (for scripts; exits the shell).
 ##
 function require_command {
-  command -v $1 >/dev/null 2>&1 || exit 1;
+  command -v "$1" >/dev/null 2>&1 || exit 1
 }
 
 ##

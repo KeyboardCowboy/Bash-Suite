@@ -187,7 +187,7 @@ function color {
   COLOR[FG_NULL]=00
   COLOR[BG_NULL]=00
 
-  local ESC="\033"
+  local ESC=$'\033'   # real ESC byte in both bash and zsh
   local RESET="${ESC}[${LUMIN[DULL]};${COLOR[FG_WHITE]};${COLOR[FG_NULL]}m"
 
   # Handle Special Cases
@@ -213,13 +213,14 @@ function color {
 }
 
 ## Create basic colors
-export RED=$(color RED)
-export GREEN=$(color GREEN)
-export YELLOW=$(color YELLOW)
-export BLUE=$(color BLUE)
-export VIOLET=$(color VIOLET)
-export CYAN=$(color CYAN)
-export WHITE=$(color WHITE)
-export RESET=$(color RESET)
+RED=$(color RED)
+GREEN=$(color GREEN)
+YELLOW=$(color YELLOW)
+BLUE=$(color BLUE)
+VIOLET=$(color VIOLET)
+CYAN=$(color CYAN)
+WHITE=$(color WHITE)
+RESET=$(color RESET)
+export RED GREEN YELLOW BLUE VIOLET CYAN WHITE RESET
 
 export GREEN_UL="\033[4;32m"

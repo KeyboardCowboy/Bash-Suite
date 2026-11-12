@@ -36,22 +36,10 @@ function gp {
 ##
 # Are we in a git project?
 ##
-function is_git {
-  echo `git rev-parse --git-dir 2> /dev/null;`
-}
+function is_git { git rev-parse --git-dir 2>/dev/null; }         # prints .git path, or nothing
 
 ##
-# Get the current GIT branch
+# Get the current GIT branch (nothing if detached or not in a repo)
 ##
-function git_get_current_branch {
-  echo $(gcb)
-}
-function gcb {
-  if [ -n "$(is_git)" ]; then
-    local branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
-
-    if [ -n "$branch_name" ]; then
-      echo ${branch_name##refs/heads/}
-    fi
-  fi
-}
+function gcb { git branch --show-current 2>/dev/null; }
+function git_get_current_branch { gcb; }
