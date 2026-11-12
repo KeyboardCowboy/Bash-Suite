@@ -16,13 +16,6 @@ function col_count() {
 }
 
 ##
-# Get a consistent datestamp.
-#
-function datestamp() {
-  echo $(date +%Y-%b-%d\ %H:%M:%S)
-}
-
-##
 # Echo an ERROR message.
 #
 function print_error() {
@@ -96,28 +89,14 @@ function require_command {
 }
 
 ##
-# Jump back to a specified dir.
+# Jump back up to an ancestor directory by name.
+#   ~/www/projects/myapp/web $ cdb projects   ->  ~/www/projects
+#
+# Goes to the FIRST (outermost) match. ${PWD%%"/name/"*} cuts the path at
+# the first "/name/" and keeps the left side.
 ##
 function cdb {
-  STOP="/$1/"
-  PWD=`pwd`
-
-  # Check that the desired dir is in the path.
-  if [[ $PWD == *"$STOP"* ]]; then
-    START=$(strindex $PWD $STOP)
-
-    if [ $START != -1 ]; then
-      END=$(($START + ${#STOP}))
-      GOTO=${PWD:0:$END}
-      cd $GOTO
-    fi
-  fi
-}
-
-##
-# Get the substring index of a string.
-##
-function strindex {
-  x="${1%%$2*}"
-  [[ $x = $1 ]] && echo -1 || echo ${#x}
+  local target="/$1/"
+  [[ -n "$1" && "$PWD" == *"$target"* ]] || return 1
+  cd -- "${PWD%%"$target"*}/$1" || return
 }

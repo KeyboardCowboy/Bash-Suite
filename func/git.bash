@@ -2,29 +2,34 @@
 # Git specific functions
 
 ##
-# Shortcut to push the current branch of a git repo.
+# Push the current branch and set upstream.
+#   gp                  push to origin
+#   gp origin upstream  push to each named remote
+#   gp all              push to every configured remote
+#
+# Uses arrays so each remote stays a separate word in both bash and zsh
+# (zsh does not word-split unquoted variables).
 #
 function gp {
-  BRANCH=$(git_get_current_branch)
-  REMOTES=$@
-
-  # If no remotes were passed in, push to origin.
-  if [[ -z "$REMOTES" ]]; then
-    REMOTES='origin'
+  local branch r
+  local -a remotes
+  branch=$(git branch --show-current) || return
+  if [[ -z "$branch" ]]; then
+    echo "Not on a branch (detached HEAD)." >&2
+    return 1
   fi
 
-  # If 'all', get list of remotes
-  if [[ "$REMOTES" == 'all' ]]; then
-    REM=`git remote`
-
-    # Break the remotes into an array
-    REMOTES=$(echo $REM | tr " " "\n")
+  if [[ $# -eq 0 ]]; then
+    remotes=(origin)
+  elif [[ "$1" == all ]]; then
+    while IFS= read -r r; do remotes+=("$r"); done < <(git remote)
+  else
+    remotes=("$@")
   fi
 
-  # Iterate through the array, pushing to each remote
-  for R in $REMOTES; do
-    echo -e "${GREEN}Pushing $BRANCH to $R...${RESET}"
-    git push -u $R $BRANCH
+  for r in "${remotes[@]}"; do
+    echo -e "${GREEN}Pushing ${branch} to ${r}...${RESET}"
+    git push -u "$r" "$branch"
   done
 }
 
@@ -48,29 +53,5 @@ function gcb {
     if [ -n "$branch_name" ]; then
       echo ${branch_name##refs/heads/}
     fi
-  fi
-}
-
-##
-# Get the project name from custom config keys.
-##
-function git_project_name {
-  if [ -n "$(is_git)" ]; then
-    local PROJ=`git config --get-all project.name`
-
-    if [ -n "$PROJ" ]; then
-      echo "$PROJ"
-    else
-      echo "No project name. (git config project.name 'Project Name')"
-    fi
-  fi
-}
-
-##
-# Get the root directory of this GIT project.
-##
-function git_root_dir {
-  if [ -n "$(is_git)" ]; then
-    echo ""#$(git rev-parse --show-toplevel)
   fi
 }
