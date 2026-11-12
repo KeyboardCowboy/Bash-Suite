@@ -13,6 +13,7 @@ source ~/.bash_config/global/colors.bash
 #   zmv '(*).txt' '$1.md'     (use `zmv -n …` to preview first)
 if [ -n "$ZSH_VERSION" ]; then
   source ~/.bash_config/global/history.zsh
+  source ~/.bash_config/global/hooks.zsh
   autoload -Uz zmv
 fi
 

@@ -16,7 +16,7 @@ alias ll='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahl;echo -e "${SYSCOLOR
 alias lls='decho;echo -e "${SYSCOLOR}"`pwd`"${RESET}";ls -ahlS;echo -e "${SYSCOLOR}"`pwd`"${RESET}";decho;'
 alias mkdir="mkdir -p"
 alias matrix='LC_ALL=C tr -c "[:digit:]" " " < /dev/urandom | dd cbs=$COLUMNS conv=unblock | GREP_COLOR="1;32" grep --color "[^ ]"'
-alias p="cd ..; ll"
+alias p="cd .."
 alias ping='ping -c 5'
 alias rebash="exec zsh -l"
 alias rekey="ssh-keygen -t ed25519 -a 100"
