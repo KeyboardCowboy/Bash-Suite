@@ -159,36 +159,10 @@ function color {
     On_ICyan='\e[0;106m'    # Cyan
    On_IWhite='\e[0;107m'   # White
 
-  # Define colors and luminosity
-  declare -A LUMIN=(
-    [DULL]=0
-    [BRIGHT]=1
-  )
-
-  declare -A COLOR=()
-  COLOR[FG_BLACK]='30'
-  COLOR[FG_RED]=31
-  COLOR[FG_GREEN]=32
-  COLOR[FG_YELLOW]=33
-  COLOR[FG_BLUE]=34
-  COLOR[FG_VIOLET]=35
-  COLOR[FG_CYAN]=36
-  COLOR[FG_WHITE]=37
-
-  COLOR[BG_BLACK]=40
-  COLOR[BG_RED]=41
-  COLOR[BG_GREEN]=42
-  COLOR[BG_YELLOW]=43
-  COLOR[BG_BLUE]=44
-  COLOR[BG_VIOLET]=45
-  COLOR[BG_CYAN]=46
-  COLOR[BG_WHITE]=47
-
-  COLOR[FG_NULL]=00
-  COLOR[BG_NULL]=00
-
+  # Name -> ANSI code lookups use `case`, not associative arrays (declare -A),
+  # so this works in macOS's bash 3.2 as well as bash 4+ and zsh.
   local ESC=$'\033'   # real ESC byte in both bash and zsh
-  local RESET="${ESC}[${LUMIN[DULL]};${COLOR[FG_WHITE]};${COLOR[FG_NULL]}m"
+  local RESET="${ESC}[0;37;00m"   # dull (0), white (37), null (00)
 
   # Handle Special Cases
   if [[ "$1" == 'RESET' ]]; then
@@ -196,20 +170,33 @@ function color {
     exit 1
   fi
 
-  # Set the luminosity, ground and color
-  local PLUMIN=${2}
-  if [[ "${PLUMIN}" != "BRIGHT" ]]; then
-    PLUMIN='DULL'
+  # Luminosity: BRIGHT -> 1, anything else -> 0 (DULL)
+  local lumin=0
+  if [[ "$2" == BRIGHT ]]; then
+    lumin=1
   fi
 
-  GROUND=$3
-  if [[ "$GROUND" != "BG" ]]; then
-    GROUND="FG"
+  # Foreground color codes are 30-37; NULL is 00; unknown names are empty.
+  local code
+  case "$1" in
+    BLACK)  code=30 ;;
+    RED)    code=31 ;;
+    GREEN)  code=32 ;;
+    YELLOW) code=33 ;;
+    BLUE)   code=34 ;;
+    VIOLET) code=35 ;;
+    CYAN)   code=36 ;;
+    WHITE)  code=37 ;;
+    NULL)   code=00 ;;
+    *)      code='' ;;
+  esac
+
+  # Background codes are the foreground code + 10 (40-47).
+  if [[ "$3" == BG && "$code" == 3[0-7] ]]; then
+    code=$((code + 10))
   fi
 
-  local BGCOLOR="${GROUND}_${1}"
-
-  echo "${ESC}[${LUMIN[$PLUMIN]};${COLOR[$BGCOLOR]}m"
+  echo "${ESC}[${lumin};${code}m"
 }
 
 ## Create basic colors
