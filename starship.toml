@@ -4,8 +4,17 @@
 
 # Line 1: where you are + context. Line 2: the input symbol.
 format = """
-$directory$git_branch$git_state$git_status$nodejs$python$php$cmd_duration$status
+$hostname$directory$git_branch$git_state$git_status$nodejs$python$php$cmd_duration$status
 $character"""
+
+[hostname]
+# Machine name, shown only inside an SSH session (ssh_only, the default), so
+# a remote tab is obvious and local tabs stay short. The iTerm tab title
+# shows the host on every tab (see hooks.zsh).
+ssh_only = true
+trim_at = "."                # "my-mini.local" -> "my-mini"
+format = '[$hostname]($style) '
+style = "bold yellow"        # stands apart from the cyan directory
 
 [directory]
 truncation_length = 3        # show at most the last 3 path parts

@@ -8,9 +8,5 @@ source ~/.bash_config/global/colors.bash
 SYSCOLOR=$(color CYAN)
 export SYSCOLOR
 
-# Set the terminal short and long titles
-export TITLE=''
-export STITLE=''
-
 # Define the webroot
 export WEBROOT=~/www/htdocs
