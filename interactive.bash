@@ -16,6 +16,14 @@ if [ -n "$ZSH_VERSION" ]; then
   source ~/.bash_config/global/hooks.zsh
   autoload -Uz zmv
 
+  # Tab completion. brew shellenv (path.zsh) adds Homebrew's site-functions
+  # to $fpath; add the zsh-completions formula's extra definitions too.
+  # compinit must come after every fpath change.
+  if [ -n "$HOMEBREW_PREFIX" ] && [ -d "$HOMEBREW_PREFIX/share/zsh-completions" ]; then
+    fpath=("$HOMEBREW_PREFIX/share/zsh-completions" $fpath)
+  fi
+  autoload -Uz compinit && compinit
+
   # Prompt: Starship, with its config tracked in this repo.
   # If starship isn't installed, zsh's default prompt is used instead.
   if command -v starship >/dev/null 2>&1; then
