@@ -24,6 +24,18 @@ if [ -n "$ZSH_VERSION" ]; then
   fi
   autoload -Uz compinit && compinit
 
+  # Completion behavior:
+  #   menu select    Tab opens a menu you can move through with the arrow keys
+  #   descriptions   show what each flag/subcommand does, grouped by type
+  #   matcher-list   case-insensitive: `cd doc<Tab>` finds Documents
+  #   list-colors    color file matches with the default ls colors
+  zstyle ':completion:*' menu select
+  zstyle ':completion:*' verbose yes
+  zstyle ':completion:*' group-name ''
+  zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+  zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+  zstyle ':completion:*' list-colors ''
+
   # Prompt: Starship, with its config tracked in this repo.
   # If starship isn't installed, zsh's default prompt is used instead.
   if command -v starship >/dev/null 2>&1; then
